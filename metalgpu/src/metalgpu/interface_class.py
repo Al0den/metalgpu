@@ -49,7 +49,7 @@ class Interface:
 
     def createBuffer(self, bufsize, bufnum, bufType):
         self._createBuffer.restype = ctypes.POINTER(bufType)
-        buffPointer = self._createBuffer(bufsize, bufnum)
+        buffPointer = self._createBuffer(ctypes.sizeof(bufType) * bufsize, bufnum)
         buff = Buffer(buffPointer, bufsize, bufnum, self)
         return buff
 

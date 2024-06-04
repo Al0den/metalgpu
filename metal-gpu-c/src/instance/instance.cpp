@@ -73,7 +73,9 @@ void Instance::setFunction(const char *funcname) {
 }
 
 void *Instance::createBuffer(int bufsize, int userBufNum) {
-    MTL::Buffer *buffer = device->newBuffer(NS::UInteger(bufsize), MTL::ResourceStorageModeShared);
+    printf("Buffer size: %d\n", bufsize);
+    MTL::Buffer *buffer = device->newBuffer(bufsize, MTL::ResourceStorageModeShared);
+
     totbuf += 1;
     buffers = (BufferStorer*)realloc(buffers, sizeof(BufferStorer) * totbuf + 1);
     BufferStorer newBufStore;
@@ -82,11 +84,6 @@ void *Instance::createBuffer(int bufsize, int userBufNum) {
     newBufStore.userBufNum = userBufNum;
 
     buffers[totbuf] = newBufStore;
-
-    int *arr = (int*)buffer->contents();
-    arr[1] = 100;
-    
-    testBuffer = buffer;
 
     return buffer->contents();
 }
