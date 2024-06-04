@@ -57,6 +57,7 @@ When tested using performance.py, on Apple Silicon M1 Pro, base specs:
 |---|---|---|
 | Calculating 100 million cos values  | 36.514s  | 0.131s |
 
+Note: The GPU compute is almost as fast computing 1 million or 10 calculations, being limited by throughput to about 0.001s minimum per function run.
 ## Documentation
 
 The available commands are, as of right now:
