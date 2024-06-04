@@ -34,6 +34,10 @@ instance.runFunction(buffer_size) # Computes i * i + i for every item in the 3rd
 
 for i in range(buffer_size):
     assert(buffer3.contents[i] == i + int(np.sqrt(i))) 
+
+buffer1.release()
+buffer2.release()
+buffer3.release()
 ```
 **shader.metal**
 ```
