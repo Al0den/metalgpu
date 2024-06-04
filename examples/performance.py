@@ -29,6 +29,9 @@ print("GPU time: ", gpu_end - gpu_start)
 
 assert(np.allclose(buffer2.contents, out_np, atol=1e-5))
 
+buffer1.release()
+buffer2.release()
+
 
 
 
