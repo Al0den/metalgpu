@@ -14,6 +14,9 @@ class Buffer:
         self.interface.release_buffer(self.bufNum)
         self.contents = []
 
+    def __del__(self):
+        self.release()
+
 class Interface:
     def __init__(self):
         _objPath = os.path.dirname(__file__)
@@ -29,6 +32,7 @@ class Interface:
         self._runFunction = self._metal.runFunction
         self._releaseBuffer = self._metal.releaseBuffer
         self._getBufferPointer = self._metal.getBufferPointer
+        self._deleteInstance = self._metal.deleteInstance
 
         self._init.argtypes = []
         self._createBuffer.argtypes = [ctypes.c_int]
@@ -37,6 +41,7 @@ class Interface:
         self._runFunction.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_int), ctypes.c_int]
         self._releaseBuffer.argtypes = [ctypes.c_int]
         self._getBufferPointer.argtypes = [ctypes.c_int]
+        self._deleteInstance.argtypes = []
 
         self._init.restype = None
         self._createBuffer.restype = ctypes.c_int
@@ -45,6 +50,7 @@ class Interface:
         self._runFunction.restype = None
         self._releaseBuffer.restype = None
         self._getBufferPointer.restype = ctypes.POINTER(ctypes.c_int)
+        self._deleteInstance.restype = None
 
     def create_buffer(self, bufsize : int, bufType):
         if isinstance(bufType, str):
@@ -95,6 +101,8 @@ class Interface:
         buffer.contents[:] = array
         return buffer
 
+    def __del__(self):
+        self._deleteInstance()
 
 
         
