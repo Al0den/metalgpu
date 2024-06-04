@@ -30,7 +30,7 @@ for i in range(buffer_size):
     buffer1.contents[i] = i
     buffer2.contents[i] = int(np.sqrt(i))
 
-instance.runFunction(buffer_size) # Computes i * i + i for every item in the 3rd buffer
+instance.runFunction(buffer_size) # Computes i + int(sqrt(i))
 
 for i in range(buffer_size):
     assert(buffer3.contents[i] == i + int(np.sqrt(i))) 
@@ -51,7 +51,11 @@ kernel void adder(device int* arr1 [[buffer(0)]], device int* arr2 [[buffer(1)]]
 ```
 
 ## Performance
-WIP
+When tested using performance.py:
+
+| Function | CPU TIME | GPU TIME |
+|---|---|---|
+| Calculating 100 million cos values  | 36.514s  | 0.131s |
 
 ## Documentation
 WIP

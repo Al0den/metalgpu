@@ -58,7 +58,7 @@ void Instance::createLibrary(const char *filename) {
 }
 
 void Instance::setFunction(const char *funcname) {
-    auto funcstring = NS::String::string("adder", NS::ASCIIStringEncoding);
+    auto funcstring = NS::String::string(funcname, NS::ASCIIStringEncoding);
 
     if (function != NULL) {
         function->release();
