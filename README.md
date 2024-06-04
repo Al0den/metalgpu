@@ -51,7 +51,7 @@ kernel void adder(device int* arr1 [[buffer(0)]], device int* arr2 [[buffer(1)]]
 ```
 
 ## Performance
-When tested using performance.py:
+When tested using performance.py, on Apple Silicon M1 Pro, base specs:
 
 | Function | CPU Compute Time | GPU Compute Time |
 |---|---|---|
