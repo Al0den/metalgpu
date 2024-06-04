@@ -15,22 +15,22 @@ import metalgpu
 import ctypes
 import numpy as np
 
-instance = metalgpu.createInterface() # Initialise the metal instance
-instance.loadShader("./shader.metal") # Path to the metal shader
-instance.setFunction("adder") # Name of the function that will be ran (Can be changed at any time)
+instance = metalgpu.Interface() # Initialise the metal instance
+instance.load_shader("./shader.metal") # Path to the metal shader
+instance.set_function("adder") # Name of the function that will be ran (Can be changed at any time)
 
 buffer_size = 100000 # Number of items in the buffer
 buffer_type = ctypes.c_int # Types of the items inside the buffer
 
-buffer1 = instance.createBuffer(buffer_size, 0, buffer_type) # Create a shared gpu-cpu buffer.
-buffer2 = instance.createBuffer(buffer_size, 1, buffer_type)
-buffer3 = instance.createBuffer(buffer_size, 2, buffer_type)
+buffer1 = instance.create_buffer(buffer_size, 0, buffer_type) # Create a shared gpu-cpu buffer.
+buffer2 = instance.create_buffer(buffer_size, 1, buffer_type)
+buffer3 = instance.create_buffer(buffer_size, 2, buffer_type)
 
 for i in range(buffer_size):
     buffer1.contents[i] = i
     buffer2.contents[i] = int(np.sqrt(i))
 
-instance.runFunction(buffer_size) # Computes i + int(sqrt(i))
+instance.run_function(buffer_size) # Computes i + int(sqrt(i))
 
 for i in range(buffer_size):
     assert(buffer3.contents[i] == i + int(np.sqrt(i))) 

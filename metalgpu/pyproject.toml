@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "metalgpu"
 version = "0.2.1"
 authors = [
-  { name="Alois Denoiseux", email="aloisdenoiseux@example.com" },
+  { name="Alois Denoiseux", email="aloisdenoiseux@gmail.com" },
 ]
 description = "A python wrapper for Apple's Metal API"
 readme = "README.md"

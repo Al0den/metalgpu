@@ -66,10 +66,10 @@ void Instance::setFunction(const char *funcname) {
     }
 
     function = library->newFunction(funcstring);
-    if (function == NULL) { error(std::string("Failed to create function")); }
+    if (function == NULL) { error(std::string("[MetalGPU] Failed to create function")); }
 
     functionPSO = device->newComputePipelineState(function, &errPtr);
-    if(functionPSO == NULL) { error(std::string("Failed to create pipeline state")); }
+    if(functionPSO == NULL) { error(std::string("[MetalGPU] Failed to create pipeline state")); }
 }
 
 void *Instance::createBuffer(int bufsize, int userBufNum) {
@@ -77,6 +77,7 @@ void *Instance::createBuffer(int bufsize, int userBufNum) {
 
     totbuf += 1;
     buffers = (BufferStorer*)realloc(buffers, sizeof(BufferStorer) * totbuf + 1);
+    
     BufferStorer newBufStore;
 
     newBufStore.buffer = buffer;

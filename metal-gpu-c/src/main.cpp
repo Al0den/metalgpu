@@ -41,10 +41,6 @@ int main() {
 }  
 
 extern "C" {
-    int test() {
-        return 2;
-    }
-
     void init() {
         mainInstance = new Instance();
         mainInstance->init();

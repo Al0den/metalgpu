@@ -8,3 +8,4 @@ metal-gpu-c/compile_commands.json
 metal-gpu-c/src/test.metal
 metalgpu/src/test.py
 metalgpu/src/shader.metal
+.vscode/*
