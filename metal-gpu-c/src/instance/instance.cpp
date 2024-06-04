@@ -73,7 +73,6 @@ void Instance::setFunction(const char *funcname) {
 }
 
 void *Instance::createBuffer(int bufsize, int userBufNum) {
-    printf("Buffer size: %d\n", bufsize);
     MTL::Buffer *buffer = device->newBuffer(bufsize, MTL::ResourceStorageModeShared);
 
     totbuf += 1;

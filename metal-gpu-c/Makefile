@@ -7,3 +7,4 @@ object:
 library:
 	clang++ *.o -shared -o ./build/lib.so -framework Metal -framework Foundation -framework Cocoa
 	cp ./build/lib.so ../metalgpu/src/metalgpu/binaries/lib.so
+	rm *.o
