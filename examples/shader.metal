@@ -10,3 +10,7 @@ kernel void adder(device int* arr1 [[buffer(0)]], device int* arr2 [[buffer(1)]]
     arr3[id] = arr2[id] + arr1[id];
 };
 
+kernel void sqrt_func(device float *arr [[buffer(0)]], uint id [[thread_position_in_grid]]) {
+    arr[id] = sqrt(arr[id]);
+};
+
