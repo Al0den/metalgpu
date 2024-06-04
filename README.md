@@ -53,7 +53,7 @@ kernel void adder(device int* arr1 [[buffer(0)]], device int* arr2 [[buffer(1)]]
 ## Performance
 When tested using performance.py:
 
-| Function | CPU TIME | GPU TIME |
+| Function | CPU Compute Time | GPU Compute Time |
 |---|---|---|
 | Calculating 100 million cos values  | 36.514s  | 0.131s |
 
