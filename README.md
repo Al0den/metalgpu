@@ -68,7 +68,7 @@ The available commands are, as of right now:
 - `instance.createBuffer(numItems, bufferType)`, creates a shared buffer. bufferNum refers to the buffer identifier for the shader. bufferType should be a ctype, similar to the examples.
 - `buffer.release()`, free up the buffer. You should always free up memory that you will not use again.
 - `buffer.contents`, a numpy array vision of the buffer. It can be manipulated as a numpy array, however keep in mind that it should still be readable to the gpu. No copying is going on behind the scenes
-- `instance.runFunction(numThreads)`, runs the set function, starting up 'numthreads' different threads.
+- `instance.runFunction(numThreads, buffers)`, runs the set function, starting up 'numthreads' different threads. buffers should be a list of buffers, with the first being referenced as buffer 0 in metal. If you want to "skip" a buffer number, as to use buffer 0 and 2, do [buff0, None, buff2]
 
 ## Credits
 - [MyMetalKernel.py](https://gist.github.com/alvinwan/f7bb0cdd26c018f40052f9944fc5c679/revisions) Didn't manage to get this to work, overcomplicated for python code
