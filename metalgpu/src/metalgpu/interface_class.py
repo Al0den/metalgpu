@@ -3,13 +3,13 @@ import numpy as np
 import os
 
 class Buffer:
-    def __init__(self, buffPointer, buffSize, buffNum, interface):
+    def __init__(self, buffPointer, buffSize, interface, bufNum):
         self.contents = np.ctypeslib.as_array(buffPointer, shape=(buffSize,))
-        self.bufnum = buffNum
+        self.bufNum = bufNum
         self.interface = interface
 
     def release(self):
-        self.interface.releaseBuffer(self.bufnum)
+        self.interface.release_buffer(self.bufNum)
         self.contents = []
 
 class Interface:
@@ -26,25 +26,29 @@ class Interface:
         self._setFunction = self._metal.setFunction
         self._runFunction = self._metal.runFunction
         self._releaseBuffer = self._metal.releaseBuffer
+        self._getBufferPointer = self._metal.getBufferPointer
 
         self._init.argtypes = []
-        self._createBuffer.argtypes = [ctypes.c_int, ctypes.c_int]
+        self._createBuffer.argtypes = [ctypes.c_int]
         self._createLibrary.argtypes = [ctypes.c_char_p]
         self._setFunction.argtypes = [ctypes.c_char_p]
-        self._runFunction.argtypes = [ctypes.c_int]
+        self._runFunction.argtypes = [ctypes.c_int, ctypes.POINTER(ctypes.c_int), ctypes.c_int]
         self._releaseBuffer.argtypes = [ctypes.c_int]
+        self._getBufferPointer.argtypes = [ctypes.c_int]
 
         self._init.restype = None
-        self._createBuffer.restype = ctypes.POINTER(ctypes.c_int)
+        self._createBuffer.restype = ctypes.c_int
         self._createLibrary.restype = None
         self._setFunction.restype = None
         self._runFunction.restype = None
         self._releaseBuffer.restype = None
+        self._getBufferPointer.restype = ctypes.POINTER(ctypes.c_int)
 
-    def create_buffer(self, bufsize : int, bufnum : int, bufType):
-        self._createBuffer.restype = ctypes.POINTER(bufType)
-        buffPointer = self._createBuffer(ctypes.sizeof(bufType) * bufsize, bufnum)
-        buff = Buffer(buffPointer, bufsize, bufnum, self)
+    def create_buffer(self, bufsize, bufType):
+        number = self._createBuffer(ctypes.sizeof(bufType) * bufsize)
+        self._getBufferPointer.restype = ctypes.POINTER(bufType)
+        buffPointer = self._getBufferPointer(number)
+        buff = Buffer(buffPointer, bufsize, self, number)
         return buff
 
     def load_shader(self, shaderPath):
@@ -53,8 +57,15 @@ class Interface:
     def set_function(self, functionName):
         self._setFunction(functionName.encode('utf-8'))
 
-    def run_function(self, numThreads):
-        self._runFunction(numThreads)
+    def run_function(self, numThreads, buffers):
+        bufferList = []
+        for buff in buffers:
+            if buff is None:
+                bufferList.append(-1)
+            else:
+                bufferList.append(buff.bufNum)
+        bufferArr = np.array(bufferList).astype(np.int32)
+        self._runFunction(numThreads, bufferArr.ctypes.data_as(ctypes.POINTER(ctypes.c_int)), len(bufferArr))
 
     def release_buffer(self, bufnum):
         self._releaseBuffer(bufnum)

@@ -10,7 +10,7 @@ instance.set_function("cos_func")
 buffer_size = 10000000
 buffer_type = ctypes.c_float
 
-buffer1 = instance.create_buffer(buffer_size, 0, buffer_type)
+buffer1 = instance.create_buffer(buffer_size, buffer_type)
 
 for i in range(buffer_size):
     buffer1.contents[i] = i/buffer_size
@@ -20,7 +20,7 @@ out_np = [np.cos(i) for i in buffer1.contents]
 np_end = time.time()
 
 gpu_start = time.time()
-instance.run_function(buffer_size)
+instance.run_function(buffer_size, [buffer1])
 gpu_end = time.time()
 
 print("CPU time: ", np_end - np_start)

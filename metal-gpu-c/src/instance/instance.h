@@ -3,7 +3,7 @@
 
 struct BufferStorer {
     MTL::Buffer *buffer;
-    int userBufNum;
+    int bufferNum;
 };
 
 class Instance {
@@ -12,13 +12,12 @@ class Instance {
         void createLibrary(const char* filename);
         void setFunction(const char *funcname);
         void releaseBuffer(int bufnum);
-        void runFunction(int numThreads);
+        void runFunction(int numThreads, int *requestedBuffers, int numRequestedBuffers);
 
         ~Instance();
 
-        void *createBuffer(int bufsize, int userBufNum);
-
-        MTL::Buffer *testBuffer;
+        int createBuffer(int bufsize);
+        void *getBufferPointer(int bufnum);
 
         BufferStorer *buffers;
         int totbuf;

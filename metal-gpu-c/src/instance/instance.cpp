@@ -72,32 +72,33 @@ void Instance::setFunction(const char *funcname) {
     if(functionPSO == NULL) { error(std::string("[MetalGPU] Failed to create pipeline state")); }
 }
 
-void *Instance::createBuffer(int bufsize, int userBufNum) {
+int Instance::createBuffer(int bufsize) {
     MTL::Buffer *buffer = device->newBuffer(bufsize, MTL::ResourceStorageModeShared);
 
     totbuf += 1;
     buffers = (BufferStorer*)realloc(buffers, sizeof(BufferStorer) * totbuf + 1);
-    
+
     BufferStorer newBufStore;
 
     newBufStore.buffer = buffer;
-    newBufStore.userBufNum = userBufNum;
+    newBufStore.bufferNum = totbuf;
 
     buffers[totbuf] = newBufStore;
 
-    return buffer->contents();
+    return totbuf;
 }
-
-void Instance::runFunction(int numThreads) {
+ 
+void Instance::runFunction(int numThreads, int *requestedBuffers, int numRequestedBuffers) {
     MTL::CommandBuffer *commandBuffer = commandQueue->commandBuffer();
     MTL::ComputeCommandEncoder *encoder = commandBuffer->computeCommandEncoder();
-
     encoder->setComputePipelineState(functionPSO);
-    for (int i = 0; i <= totbuf; i++) {
-        if(buffers[i].buffer != NULL) {
-            encoder->setBuffer(buffers[i].buffer, 0, buffers[i].userBufNum);
+    for(int i = 0; i < numRequestedBuffers; i++) {
+        if(requestedBuffers[i] == -1 ) {
+            continue; 
         }
+        encoder->setBuffer(buffers[requestedBuffers[i]].buffer, 0, i);
     }
+
     MTL::Size gridSize = MTL::Size(numThreads, 1, 1);
 
     NS::UInteger threadsGroupSize = NS::UInteger(numThreads);
@@ -120,3 +121,6 @@ void Instance::releaseBuffer(int bufnum) {
     buffers[bufnum].buffer = NULL;
 }
 
+void *Instance::getBufferPointer(int bufnum) {
+    return buffers[bufnum].buffer->contents();
+}
