@@ -2,6 +2,8 @@ import ctypes
 import numpy as np
 import os
 
+from utils import getCtypesType
+
 class Buffer:
     def __init__(self, buffPointer, buffSize, interface, bufNum):
         self.contents = np.ctypeslib.as_array(buffPointer, shape=(buffSize,))
@@ -44,33 +46,37 @@ class Interface:
         self._releaseBuffer.restype = None
         self._getBufferPointer.restype = ctypes.POINTER(ctypes.c_int)
 
-    def create_buffer(self, bufsize, bufType):
+    def create_buffer(self, bufsize : int, bufType):
+        if isinstance(bufType, str):
+            bufType = getCtypesType(bufType)
         number = self._createBuffer(ctypes.sizeof(bufType) * bufsize)
         self._getBufferPointer.restype = ctypes.POINTER(bufType)
         buffPointer = self._getBufferPointer(number)
         buff = Buffer(buffPointer, bufsize, self, number)
         return buff
 
-    def load_shader(self, shaderPath):
+    def load_shader(self, shaderPath : str):
         self._createLibrary(shaderPath.encode('utf-8'))
 
-    def set_function(self, functionName):
+    def set_function(self, functionName : str):
         self._setFunction(functionName.encode('utf-8'))
 
-    def run_function(self, numThreads, buffers):
+    def run_function(self, numThreads : int, buffers : list):
         bufferList = []
         for buff in buffers:
             if buff is None:
                 bufferList.append(-1)
-            else:
+            elif isinstance(buff, Buffer):
                 bufferList.append(buff.bufNum)
+            else:
+                raise Exception("Unsupported buffer type")
         bufferArr = np.array(bufferList).astype(np.int32)
         self._runFunction(numThreads, bufferArr.ctypes.data_as(ctypes.POINTER(ctypes.c_int)), len(bufferArr))
 
-    def release_buffer(self, bufnum):
+    def release_buffer(self, bufnum : int):
         self._releaseBuffer(bufnum)
 
-    def array_to_buffer(self, array, bufNum):
+    def array_to_buffer(self, array, bufNum : int):
         type = array.dtype
         if type == np.int32: type = ctypes.c_int
         elif type == np.float32: type = ctypes.c_float
