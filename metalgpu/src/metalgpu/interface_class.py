@@ -2,8 +2,6 @@ import ctypes
 import numpy as np
 import os
 
-from utils import getCtypesType
-
 class Buffer:
     def __init__(self, buffPointer, buffSize, interface, bufNum):
         self.contents = np.ctypeslib.as_array(buffPointer, shape=(buffSize,))
@@ -53,8 +51,6 @@ class Interface:
         self._deleteInstance.restype = None
 
     def create_buffer(self, bufsize : int, bufType):
-        if isinstance(bufType, str):
-            bufType = getCtypesType(bufType)
         number = self._createBuffer(ctypes.sizeof(bufType) * bufsize)
         self._getBufferPointer.restype = ctypes.POINTER(bufType)
         buffPointer = self._getBufferPointer(number)
