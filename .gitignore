@@ -1,0 +1,8 @@
+metalgpu/dist/*
+*__pycache__*
+test/*
+metal-gpu-c/.cache/*
+metal-gpu-c/build/*
+.DS_Store
+metal-gpu-c/compile_commands.json
+metal-gpu-c/src/test.metal

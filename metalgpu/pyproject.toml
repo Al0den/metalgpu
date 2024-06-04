@@ -1,0 +1,18 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "metalgpu"
+version = "0.1.6"
+authors = [
+  { name="Alois Denoiseux", email="aloisdenoiseux@example.com" },
+]
+description = "A python wrapper for Apple's Metal API"
+readme = "README.md"
+requires-python = ">=3.1" 
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: MacOS :: MacOS X", 
+]
