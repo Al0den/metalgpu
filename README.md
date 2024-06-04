@@ -9,7 +9,7 @@ If any errors relating to binaries occur, you can recompile them by downloading 
 
 ## Examples
 
-main.py
+**main.py**
 ```python
 import metalgpu
 import ctypes
@@ -34,7 +34,7 @@ instance.runFunction(buffer_size) # Computes i * i + i for every item in the 3rd
 assert(buffer.contents[32] == 32 * 32 + 32)
 
 ```
-shader.metal
+**shader.metal**
 ```
 #include <metal_stdlib>
 
