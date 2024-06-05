@@ -11,14 +11,14 @@ testing:
 	cd examples && $(MAKE) testing
 	@echo "---All tests passed---"
 git_push:
-	@echo "---Pushing differences to github"
+	@echo "---Pushing to git with commit message: '$(COMMIT_MESSAGE)'---"
 	git add .
-	git commit -m "auto-push"
+	git commit -m "$(COMMIT_MESSAGE) -  auto"
 	git push
-	@echo "---Pushed differences to github"
+	@echo "---Pushed to git.---"
 
 all:
 	make recompile_c
-	make push_pypi
-	make git_push
 	make testing
+	make git_push
+	make push_pypi
