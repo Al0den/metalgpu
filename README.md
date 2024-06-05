@@ -11,11 +11,11 @@ If any errors relating to binaries occur, you can recompile them by downloading 
 
 **main.py**
 ```python
-import metalgpu
+from metalgpu import Interface
 import ctypes
 import numpy as np
 
-instance = metalgpu.Interface() # Initialise the metal instance
+instance = Interface() # Initialise the metal instance
 instance.load_shader("./shader.metal") # Path to the metal shader
 instance.set_function("adder") # Name of the function that will be ran (Can be changed at any time)
 
@@ -62,13 +62,14 @@ Note: The GPU compute is almost as fast computing 1 million or 10 calculations, 
 ## Documentation
 
 The available commands are, as of right now:
-- `createInterface()`, creates the Metal instance
+- `metalgpu.Interface()`, creates the Metal instance
 - `instance.loadShader(shaderPath)`, loads the shader file
 - `instance.setFunction(functionName)`, sets the function that will be used. This can be changed at any time
 - `instance.createBuffer(numItems, bufferType)`, creates a shared buffer. bufferType should be a ctype, similar to the examples.
 - `buffer.release()`, free up the buffer. You should always free up memory that you will not use again.
 - `buffer.contents`, a numpy array vision of the buffer. It can be manipulated as a numpy array, however keep in mind that it should still be readable to the gpu. No copying is going on behind the scenes
 - `instance.runFunction(numThreads, buffers)`, runs the set function, starting up 'numthreads' different threads. buffers should be a list of buffers, with the first being referenced as buffer 0 in metal. If you want to "skip" a buffer number, as to use buffer 0 and 2, do [buff0, None, buff2]
+- `instance.array_to_buffer(array)`, creates a buffer and copies the numpy array to the buffer
 
 ## Credits
 - [MyMetalKernel.py](https://gist.github.com/alvinwan/f7bb0cdd26c018f40052f9944fc5c679/revisions) Didn't manage to get this to work, overcomplicated for python code

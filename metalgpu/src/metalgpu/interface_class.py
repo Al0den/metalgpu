@@ -78,7 +78,7 @@ class Interface:
     def release_buffer(self, bufnum : int):
         self._releaseBuffer(bufnum)
 
-    def array_to_buffer(self, array, bufNum : int):
+    def array_to_buffer(self, array):
         type = array.dtype
         if type == np.int32: type = ctypes.c_int
         elif type == np.float32: type = ctypes.c_float
@@ -92,7 +92,7 @@ class Interface:
         elif type == np.uint64: type = ctypes.c_ulonglong
         else: raise Exception("Unsupported data type")
 
-        buffer = self.createBuffer(len(array), bufNum, type)
+        buffer = self.create_buffer(len(array), type)
 
         buffer.contents[:] = array
         return buffer
