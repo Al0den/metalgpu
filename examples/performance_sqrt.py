@@ -12,8 +12,7 @@ buffer_type = ctypes.c_float
 
 buffer1 = instance.create_buffer(buffer_size, buffer_type)
 
-for i in range(buffer_size):
-    buffer1.contents[i] = float(i)
+buffer1.contents[:] = [i for i in range(buffer_size)]
 
 np_start = time.time()
 out_np = [np.sqrt(i) for i in buffer1.contents]

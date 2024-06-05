@@ -11,9 +11,7 @@ buffer_size = 1000000
 buffer_type = ctypes.c_float
 
 buffer1 = instance.create_buffer(buffer_size, buffer_type)
-
-for i in range(buffer_size):
-    buffer1.contents[i] = i/buffer_size
+buffer1.contents[:] = [i/buffer_size for i in range(buffer_size)]
 
 np_start = time.time()
 out_np = [np.cos(i) for i in buffer1.contents]
