@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "metalgpu"
-version = "0.3.10"
+version = "0.3.13"
 authors = [
   { name="Alois Denoiseux", email="aloisdenoiseux@gmail.com" },
 ]
@@ -19,4 +19,5 @@ classifiers = [
 dependencies = [
     "numpy>=1.21.0",
 ]
+repository="https://github.com/Al0den/metalgpu"
 

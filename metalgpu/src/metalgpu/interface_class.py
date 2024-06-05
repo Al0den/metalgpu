@@ -25,7 +25,7 @@ class Interface:
     def __del__(self):
         self._deleteInstance()
 
-    def _init_functions(self):
+    def _init_functions(self): # DNT
         self._init = self._metal.init
         self._createBuffer = self._metal.createBuffer
         self._createLibrary = self._metal.createLibrary

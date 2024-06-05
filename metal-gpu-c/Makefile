@@ -8,3 +8,9 @@ library:
 	clang++ *.o -shared -o ./build/lib.so -framework Metal -framework Foundation -framework Cocoa
 	cp ./build/lib.so ../metalgpu/src/metalgpu/binaries/lib.so
 	rm *.o
+full:
+	clang++ src/*.cpp src/instance/*.cpp src/api/*.cpp -c -fPIC -I/Users/alois/Desktop/projects/metal-cpp -I/Users/alois/Desktop/projects/metal-cpp/Metal
+	clang++ *.o -shared -o ./build/lib.so -framework Metal -framework Foundation -framework Cocoa
+	cp ./build/lib.so ../metalgpu/src/metalgpu/binaries/lib.so
+	rm *.o
+
