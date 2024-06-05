@@ -57,6 +57,19 @@ void Instance::createLibrary(const char *filename) {
     }
 }
 
+void Instance::createLibraryFromString(const char *fileString) {
+    NS::String *source_code = NS::String::string(fileString, NS::StringEncoding::UTF8StringEncoding);
+    errPtr = nullptr;
+    MTL::CompileOptions *options = nullptr;
+    if (library != NULL) {
+        library->release();
+    }
+    library = device->newLibrary(source_code, options, &errPtr);
+    if (library == NULL) { 
+        std::cout << errPtr->localizedDescription()->utf8String() << std::endl;
+    }
+}   
+
 void Instance::setFunction(const char *funcname) {
     auto funcstring = NS::String::string(funcname, NS::ASCIIStringEncoding);
 

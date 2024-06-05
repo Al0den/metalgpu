@@ -22,6 +22,9 @@ class Interface:
         self._init_functions()
         self._init()
 
+    def __del__(self):
+        self._deleteInstance()
+
     def _init_functions(self):
         self._init = self._metal.init
         self._createBuffer = self._metal.createBuffer
@@ -31,6 +34,7 @@ class Interface:
         self._releaseBuffer = self._metal.releaseBuffer
         self._getBufferPointer = self._metal.getBufferPointer
         self._deleteInstance = self._metal.deleteInstance
+        self._createLibraryFromString = self._metal.createLibraryFromString
 
         self._init.argtypes = []
         self._createBuffer.argtypes = [ctypes.c_int]
@@ -40,6 +44,7 @@ class Interface:
         self._releaseBuffer.argtypes = [ctypes.c_int]
         self._getBufferPointer.argtypes = [ctypes.c_int]
         self._deleteInstance.argtypes = []
+        self._createLibraryFromString.argtypes = [ctypes.c_char_p]
 
         self._init.restype = None
         self._createBuffer.restype = ctypes.c_int
@@ -49,6 +54,7 @@ class Interface:
         self._releaseBuffer.restype = None
         self._getBufferPointer.restype = ctypes.POINTER(ctypes.c_int)
         self._deleteInstance.restype = None
+        self._createLibraryFromString.argtypes = [ctypes.c_char_p]
 
     def create_buffer(self, bufsize : int, bufType):
         number = self._createBuffer(ctypes.sizeof(bufType) * bufsize)
@@ -97,8 +103,7 @@ class Interface:
         buffer.contents[:] = array
         return buffer
 
-    def __del__(self):
-        self._deleteInstance()
-
+    def load_shader_from_str(self, libStr : str):
+        self._createLibraryFromString(libStr.encode('utf-8'))
 
         

@@ -44,6 +44,10 @@ extern "C" {
     void *getBufferPointer(int bufnum) {
         return mainInstance->getBufferPointer(bufnum);
     }
+
+    void createLibraryFromString(const char* string) {
+        mainInstance->createLibraryFromString(string);
+    }
 }
 
 

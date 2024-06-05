@@ -63,12 +63,13 @@ Note: The GPU compute is almost as fast computing 1 million or 10 calculations, 
 
 The available commands are, as of right now:
 - `metalgpu.Interface()`, creates the Metal instance
-- `instance.loadShader(shaderPath)`, loads the shader file
-- `instance.setFunction(functionName)`, sets the function that will be used. This can be changed at any time
-- `instance.createBuffer(numItems, bufferType)`, creates a shared buffer. bufferType should be a ctype, similar to the examples.
+- `instance.load_shader(shaderPath)`, loads the shader file
+- `instance.load_shader_from_str(string)`, loads a shader from a string
+- `instance.set_function(functionName)`, sets the function that will be used. This can be changed at any time
+- `instance.create_buffer(numItems, bufferType)`, creates a shared buffer. bufferType should be a ctype, similar to the examples.
 - `buffer.release()`, free up the buffer. You should always free up memory that you will not use again.
 - `buffer.contents`, a numpy array vision of the buffer. It can be manipulated as a numpy array, however keep in mind that it should still be readable to the gpu. No copying is going on behind the scenes
-- `instance.runFunction(numThreads, buffers)`, runs the set function, starting up 'numthreads' different threads. buffers should be a list of buffers, with the first being referenced as buffer 0 in metal. If you want to "skip" a buffer number, as to use buffer 0 and 2, do [buff0, None, buff2]
+- `instance.run_function(numThreads, buffers)`, runs the set function, starting up 'numthreads' different threads. buffers should be a list of buffers, with the first being referenced as buffer 0 in metal. If you want to "skip" a buffer number, as to use buffer 0 and 2, do [buff0, None, buff2]
 - `instance.array_to_buffer(array)`, creates a buffer and copies the numpy array to the buffer
 
 ## Credits
