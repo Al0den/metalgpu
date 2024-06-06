@@ -89,13 +89,13 @@ int Instance::createBuffer(int bufsize) {
     MTL::Buffer *buffer = device->newBuffer(bufsize, MTL::ResourceStorageModeShared);
 
     totbuf += 1;
-    buffers = (BufferStorer*)realloc(buffers, sizeof(BufferStorer) * totbuf + 1);
 
     BufferStorer newBufStore;
 
     newBufStore.buffer = buffer;
     newBufStore.bufferNum = totbuf;
 
+    buffers = (BufferStorer*)realloc(buffers, sizeof(BufferStorer) * totbuf + 1);
     buffers[totbuf] = newBufStore;
 
     return totbuf;
