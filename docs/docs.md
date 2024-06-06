@@ -1,4 +1,4 @@
-# MetalGPU - Documentation
+This is the documentation for the python libary metalgpu. 
 
 ## Interface
 
