@@ -19,9 +19,8 @@ instance.load_shader_from_string(shader_str)
 instance.set_function("cos_func")
 
 buffer_size = 1000000
-buffer_type = ctypes.c_float
 
-buffer1 = instance.create_buffer(buffer_size, buffer_type)
+buffer1 = instance.create_buffer(buffer_size, "float")
 buffer1.contents[:] = [i/buffer_size for i in range(buffer_size)]
 
 np_start = time.time()

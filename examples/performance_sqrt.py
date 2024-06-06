@@ -20,9 +20,8 @@ instance.set_function("sqrt_func")
 
 
 buffer_size = 1000000
-buffer_type = ctypes.c_float
 
-buffer1 = instance.create_buffer(buffer_size, buffer_type)
+buffer1 = instance.create_buffer(buffer_size, "float")
 
 buffer1.contents[:] = [i for i in range(buffer_size)]
 

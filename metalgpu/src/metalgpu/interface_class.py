@@ -25,7 +25,7 @@ class Interface:
     def __del__(self):
         self._deleteInstance()
 
-    def _init_functions(self): # DNT
+    def _init_functions(self):
         self._init = self._metal.init
         self._createBuffer = self._metal.createBuffer
         self._createLibrary = self._metal.createLibrary
@@ -56,7 +56,9 @@ class Interface:
         self._deleteInstance.restype = None
         self._createLibraryFromString.argtypes = [ctypes.c_char_p]
 
-    def create_buffer(self, bufsize : int, bufType):
+    def create_buffer(self, bufsize : int, bufTypeString):
+        assert bufsize > 0, "[MetalGPU] Buffer size must be greater than 0"
+        bufType = Interface.resolveType(bufTypeString)
         number = self._createBuffer(ctypes.sizeof(bufType) * bufsize)
         self._getBufferPointer.restype = ctypes.POINTER(bufType)
         buffPointer = self._getBufferPointer(number)
@@ -84,7 +86,7 @@ class Interface:
     def release_buffer(self, bufnum : int):
         self._releaseBuffer(bufnum)
 
-    def array_to_buffer(self, array):
+    def array_to_buffer(self, array : np.ndarray):
         type = array.dtype
         if type == np.int32: type = ctypes.c_int
         elif type == np.float32: type = ctypes.c_float
@@ -105,5 +107,28 @@ class Interface:
 
     def load_shader_from_string(self, libStr : str):
         self._createLibraryFromString(libStr.encode('utf-8'))
+
+    def resolveType(type):
+        # Takes in a stringed type and returns the corresponding ctypes type
+        ctype_types = { 
+            ctypes.c_int, ctypes.c_float, ctypes.c_double, ctypes.c_longlong,
+            ctypes.c_short, ctypes.c_byte, ctypes.c_ubyte, ctypes.c_ushort,
+            ctypes.c_uint, ctypes.c_ulonglong 
+        }
+
+        if type in ctype_types:
+            return type
+
+        if type == "int": return ctypes.c_int
+        elif type == "float": return ctypes.c_float
+        elif type == "double": return ctypes.c_double
+        elif type == "longlong": return ctypes.c_longlong
+        elif type == "short": return ctypes.c_short
+        elif type == "byte": return ctypes.c_byte
+        elif type == "ubyte": return ctypes.c_ubyte
+        elif type == "ushort": return ctypes.c_ushort
+        elif type == "uint": return ctypes.c_uint
+        elif type == "ulonglong": return ctypes.c_ulonglong
+        else: raise Exception("Unsupported data type")
 
         

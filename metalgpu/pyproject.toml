@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "metalgpu"
-version = "0.3.14"
+version = "0.4.0"
 authors = [
   { name="Alois Denoiseux", email="aloisdenoiseux@gmail.com" },
 ]
