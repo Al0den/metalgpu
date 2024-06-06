@@ -15,7 +15,7 @@ kernel void sqrt_func(device float* arr[[buffer(0)]], uint id [[thread_position_
 }
 """
 
-instance.load_shader_from_str(shader_str)
+instance.load_shader_from_string(shader_str)
 instance.set_function("sqrt_func")
 
 

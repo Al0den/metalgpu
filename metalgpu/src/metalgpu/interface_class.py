@@ -103,7 +103,7 @@ class Interface:
         buffer.contents[:] = array
         return buffer
 
-    def load_shader_from_str(self, libStr : str):
+    def load_shader_from_string(self, libStr : str):
         self._createLibraryFromString(libStr.encode('utf-8'))
 
         

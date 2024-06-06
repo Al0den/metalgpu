@@ -15,7 +15,7 @@ kernel void cos_func(device float* arr[[buffer(0)]], uint id [[thread_position_i
 }
 """
 
-instance.load_shader_from_str(shader_str)
+instance.load_shader_from_string(shader_str)
 instance.set_function("cos_func")
 
 buffer_size = 1000000

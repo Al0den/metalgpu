@@ -12,7 +12,7 @@ kernel void adder(device int *arr1 [[buffer(0)]], device int *arr2 [[buffer(1)]]
     arr3[id] = arr2[id] + arr1[id];
 }
 """
-instance.load_shader_from_str(shader_string)
+instance.load_shader_from_string(shader_string)
 instance.set_function("adder") # Name of the function that will be ran (Can be changed at any time)
 
 buffer_size = 100000 # Number of items in the buffer
