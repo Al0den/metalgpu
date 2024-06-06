@@ -4,8 +4,20 @@ import numpy as np
 import time
 
 instance = metalgpu.Interface()
-instance.load_shader("./shader.metal")
+
+shader_str = """
+#include <metal_stdlib>
+
+using namespace metal;
+
+kernel void sqrt_func(device float* arr[[buffer(0)]], uint id [[thread_position_in_grid]]) {
+    arr[id] = sqrt(arr[id]);
+}
+"""
+
+instance.load_shader_from_str(shader_str)
 instance.set_function("sqrt_func")
+
 
 buffer_size = 1000000
 buffer_type = ctypes.c_float

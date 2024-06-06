@@ -4,7 +4,18 @@ import numpy as np
 import time
 
 instance = metalgpu.Interface()
-instance.load_shader("./shader.metal")
+
+shader_str = """
+#include <metal_stdlib>
+
+using namespace metal;
+
+kernel void cos_func(device float* arr[[buffer(0)]], uint id [[thread_position_in_grid]]) {
+    arr[id] = cos(arr[id]);
+}
+"""
+
+instance.load_shader_from_str(shader_str)
 instance.set_function("cos_func")
 
 buffer_size = 1000000

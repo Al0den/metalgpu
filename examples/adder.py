@@ -3,7 +3,16 @@ import ctypes
 import numpy as np
 
 instance = metalgpu.Interface() # Initialise the metal instance
-instance.load_shader("./shader.metal") # Path to the metal shader
+shader_string = """
+#include <metal_stdlib>
+
+using namespace metal;
+
+kernel void adder(device int *arr1 [[buffer(0)]], device int *arr2 [[buffer(1)]], device int *arr3 [[buffer(2)]], uint id [[thread_position_in_grid]]) {
+    arr3[id] = arr2[id] + arr1[id];
+}
+"""
+instance.load_shader_from_str(shader_string)
 instance.set_function("adder") # Name of the function that will be ran (Can be changed at any time)
 
 buffer_size = 100000 # Number of items in the buffer
