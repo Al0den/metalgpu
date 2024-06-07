@@ -46,6 +46,8 @@ A buffer is a shared part of memory between the GPU and CPU. It is the only way 
 
 It can be destroyed using `del buffer`.
 
+The buffer class is private, and any buffer creation should thus be through an interface.
+
 ### Buffer.contents()
 
 Returns the contents of the buffer as a numpy array.
