@@ -28,11 +28,8 @@ buffer2 = instance.array_to_buffer(initial_array)
 
 print(buffer1.contents)
 print(buffer2.contents)
-
 buffer3 = buffer1 * buffer2
-
 print(buffer3.contents)
-
 buffer4 = instance.create_buffer(buffer_size, buffer_type)
 
 instance.run_function(buffer_size, [buffer1, buffer2, buffer4])
