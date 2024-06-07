@@ -111,7 +111,7 @@ class Buffer:
 class Interface:
     def __init__(self):
         _objPath = os.path.dirname(__file__)
-        self._metal = ctypes.cdll.LoadLibrary(_objPath + "/binaries/lib.so")
+        self._metal = ctypes.cdll.LoadLibrary(_objPath + "/lib/libmetalgpucpp.dylib")
         self._init_functions()
         self._init()
         self._loaded_shader = ""
