@@ -31,10 +31,12 @@ class Buffer:
         """
         prevShader = self.interface._loaded_shader
         shaderFromPath = self.interface._shader_from_path
+        prevFunction = self.interface.current_function
         self.interface.load_shader_from_string(add_kernel)
         self.interface.set_function("add")
         self.interface.run_function(len(self.contents), [self, other, outBuffer])
         self.interface.load_shader(prevShader) if shaderFromPath else self.interface.load_shader_from_string(prevShader)
+        self.interface.set_function(prevFunction)
         return outBuffer
 
     def __sub__(self, other):
@@ -53,10 +55,12 @@ class Buffer:
         """
         prevShader = self.interface._loaded_shader
         shaderFromPath = self.interface._shader_from_path
+        prevFunction = self.interface.current_function
         self.interface.load_shader_from_string(sub_kernel)
         self.interface.set_function("sub")
         self.interface.run_function(len(self.contents), [self, other, outBuffer])
         self.interface.load_shader(prevShader) if shaderFromPath else self.interface.load_shader_from_string(prevShader)
+        self.interface.set_function(prevFunction)
         return outBuffer
 
     def __mul__(self, other):
@@ -76,10 +80,12 @@ class Buffer:
         """
         prevShader = self.interface._loaded_shader
         shaderFromPath = self.interface._shader_from_path
+        prevFunction = self.interface.current_function
         self.interface.load_shader_from_string(mul_kernel)
         self.interface.set_function("mul")
         self.interface.run_function(len(self.contents), [self, other, outBuffer])
         self.interface.load_shader(prevShader) if shaderFromPath else self.interface.load_shader_from_string(prevShader)
+        self.interface.set_function(prevFunction)
         return outBuffer
 
 
@@ -96,10 +102,12 @@ class Buffer:
         """
         prevShader = self.interface._loaded_shader
         shaderFromPath = self.interface._shader_from_path
+        prevFunction = self.interface.current_function
         self.interface.load_shader_from_string(cast_kernel)
         self.interface.set_function("cast")
         self.interface.run_function(len(self.contents), [self, new_buf])
         self.interface.load_shader(prevShader) if shaderFromPath else self.interface.load_shader_from_string(prevShader)
+        self.interface.set_function(prevFunction)
         self.release()
         self.contents = new_buf.contents
         self.bufType = self.contents.dtype
@@ -116,10 +124,13 @@ class Buffer:
         """
         prevShader = self.interface._loaded_shader
         shaderFromPath = self.interface._shader_from_path
+        prevFunction = self.interface.current_function
         self.interface.load_shader_from_string(cast_kernel)
+
         self.interface.set_function("cast")
         self.interface.run_function(len(self.contents), [self, new_buf])
         self.interface.load_shader(prevShader) if shaderFromPath else self.interface.load_shader_from_string(prevShader)
+        self.interface.set_function(prevFunction)
         self.release()
         self.contents = new_buf.contents
         self.bufType = self.contents.dtype

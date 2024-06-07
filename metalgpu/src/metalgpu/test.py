@@ -32,3 +32,9 @@ print(buffer2.contents)
 buffer3 = buffer1 * buffer2
 
 print(buffer3.contents)
+
+buffer4 = instance.create_buffer(buffer_size, buffer_type)
+
+instance.run_function(buffer_size, [buffer1, buffer2, buffer4])
+
+print(buffer4.contents)

@@ -12,6 +12,7 @@ class Interface:
         self._init()
         self._loaded_shader = ""
         self._shader_from_path = False
+        self.current_function = ""
 
     def __del__(self):
         self._deleteInstance()
@@ -63,6 +64,7 @@ class Interface:
 
     def set_function(self, functionName : str):
         self._setFunction(functionName.encode('utf-8'))
+        self.current_function = functionName
 
     def run_function(self, numThreads : int, buffers : list):
         bufferList = []
