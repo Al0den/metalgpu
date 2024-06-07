@@ -1,3 +1,5 @@
+![Build Status](https://github.com/Al0den/metalgpu/actions/workflows/python-package.yml/badge.svg)
+
 # Metal GPU
 
 This is a simple wrapper around Apple's Metal API, to run compute kernels from python, with full control over buffers and methods. No copying behind the scenes, and raw access to the buffers as numpy arrays
