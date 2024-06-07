@@ -7,6 +7,7 @@ class Buffer:
         self.contents = np.ctypeslib.as_array(buffPointer, shape=(buffSize,))
         self.bufNum = bufNum
         self.interface = interface
+        self.bufType = self.contents.dtype
 
     def release(self):
         self.interface.release_buffer(self.bufNum)
@@ -15,12 +16,66 @@ class Buffer:
     def __del__(self):
         self.release()
 
+    def __add__(self, other):
+        assert(len(self.contents) == len(other.contents)), "[MetalGPU] Buffers must be of the same content size"
+        assert(self.contents.dtype == other.contents.dtype), "[MetalGPU] Buffers must be of the same data type"
+        print(self.contents.dtype)
+        outBuffer = self.interface.create_buffer(len(self.contents), self.toMetalType(self.contents.dtype))
+
+        add_kernel = f"""
+        #include <metal_stdlib>
+
+        using namespace metal;
+
+        kernel void add(const device {self.toMetalType(self.contents.dtype)} *arr1 [[buffer(0)]], const device {self.toMetalType(self.contents.dtype)} *arr2 [[buffer(1)]], device {self.toMetalType(self.contents.dtype)} *arr3 [[buffer(2)]], uint id [[thread_position_in_grid]]) {{
+            arr3[id] = arr1[id] + arr2[id];
+        }};
+        """
+        prevShader = self.interface._loaded_shader
+        shaderFromPath = self.interface._shader_from_path
+        self.interface.load_shader_from_string(add_kernel)
+        self.interface.set_function("add")
+        self.interface.run_function(len(self.contents), [self, other, outBuffer])
+        self.interface.load_shader(prevShader) if shaderFromPath else self.interface.load_shader_from_string(prevShader)
+        return outBuffer
+
+    def __sub__(self, other):
+        assert(len(self.contents) == len(other.contents)), "[MetalGPU] Buffers must be of the same content size"
+        assert(self.contents.dtype == other.contents.dtype), "[MetalGPU] Buffers must be of the same data type"
+        outBuffer = self.interface.create_buffer(len(self.contents), self.toMetalType(self.contents.dtype))
+        sub_kernel = f"""
+        #include <metal_stdlib>
+
+        using namespace metal;
+
+        kernel void sub(const device {self.toMetalType(self.contents.dtype)} *arr1 [[buffer(0)]], const device {self.toMetalType(self.contents.dtype)} *arr2 [[buffer(1)]], device {self.toMetalType(self.contents.dtype)} *arr3 [[buffer(2)]], uint id [[thread_position_in_grid]]) {{
+            arr3[id] = arr1[id] - arr2[id];
+        }};
+        """
+        prevShader = self.interface._loaded_shader
+        shaderFromPath = self.interface._shader_from_path
+        self.interface.load_shader_from_string(sub_kernel)
+        self.interface.set_function("sub")
+        self.interface.run_function(len(self.contents), [self, other, outBuffer])
+        self.interface.load_shader(prevShader) if shaderFromPath else self.interface.load_shader_from_string(prevShader)
+        return outBuffer
+    
+    def toMetalType(self, numpyType):
+        if numpyType == np.int32: return "int"
+        elif numpyType == np.float32: return "float"
+        elif numpyType == np.float64: return "double"
+        elif numpyType == np.int16: return "half"
+        else : raise Exception("[MetalGPU] Type not supported, convert to int32/float")
+
+
 class Interface:
     def __init__(self):
         _objPath = os.path.dirname(__file__)
         self._metal = ctypes.cdll.LoadLibrary(_objPath + "/binaries/lib.so")
         self._init_functions()
         self._init()
+        self._loaded_shader = ""
+        self._shader_from_path = False
 
     def __del__(self):
         self._deleteInstance()
@@ -67,6 +122,8 @@ class Interface:
 
     def load_shader(self, shaderPath : str):
         self._createLibrary(shaderPath.encode('utf-8'))
+        self._loaded_shader = shaderPath
+        self._shader_from_path = True
 
     def set_function(self, functionName : str):
         self._setFunction(functionName.encode('utf-8'))
@@ -91,13 +148,13 @@ class Interface:
         if type == np.int32: type = ctypes.c_int
         elif type == np.float32: type = ctypes.c_float
         elif type == np.float64: type = ctypes.c_double
-        elif type == np.int64: type = ctypes.c_longlong
         elif type == np.int16: type = ctypes.c_short
         elif type == np.int8: type = ctypes.c_byte
         elif type == np.uint8: type = ctypes.c_ubyte
         elif type == np.uint16: type = ctypes.c_ushort
         elif type == np.uint32: type = ctypes.c_uint
         elif type == np.uint64: type = ctypes.c_ulonglong
+        elif type == np.int64: raise Exception("[MetalGPU] No support for int64, convert to int32")
         else: raise Exception("Unsupported data type")
 
         buffer = self.create_buffer(len(array), type)
@@ -107,6 +164,8 @@ class Interface:
 
     def load_shader_from_string(self, libStr : str):
         self._createLibraryFromString(libStr.encode('utf-8'))
+        self._loaded_shader = libStr
+        self._shader_from_path = False
 
     def resolveType(type):
         # Takes in a stringed type and returns the corresponding ctypes type
@@ -130,5 +189,3 @@ class Interface:
         elif type == "uint": return ctypes.c_uint
         elif type == "ulonglong": return ctypes.c_ulonglong
         else: raise Exception("Unsupported data type")
-
-        
