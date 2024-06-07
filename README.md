@@ -28,18 +28,19 @@ kernel void adder(device int *arr1 [[buffer(0)]],
     arr3[id] = arr2[id] + arr1[id];
 }
 """
+# Note: For clearer code, use instance.load_shader(shaderPath) to load a metal file
+
 instance.load_shader_from_string(shader_string)
 instance.set_function("adder")
 
 buffer_size = 100000  # Number of items in the buffer
 buffer_type = "int"
 
-buffer1 = instance.create_buffer(buffer_size, buffer_type)
-buffer2 = instance.create_buffer(buffer_size, buffer_type)
-buffer3 = instance.create_buffer(buffer_size, buffer_type)
+initial_array = np.array([i for i in range(buffer_size)])
 
-buffer1.contents[:] = [i for i in range(buffer_size)]
-buffer2.contents[:] = [i for i in range(buffer_size)]
+buffer1 = instance.array_to_buffer(initial_array)
+buffer2 = instance.array_to_buffer(initial_array)
+buffer3 = instance.create_buffer(buffer_size, buffer_type)
 
 instance.run_function(buffer_size, [buffer1, buffer2, buffer3])
 
@@ -49,8 +50,6 @@ buffer1.release()
 buffer2.release()
 buffer3.release()
 ```
-
-Shaders can also be imported from a file using `instance.load_shader(shaderPath)`. Any file will work, although using a .metal file is the usual filetype
 
 ## Performance
 When tested using performance.py, on Apple Silicon M1 Pro, base specs:
