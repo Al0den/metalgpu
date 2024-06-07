@@ -1,6 +1,6 @@
 recompile_c:
 	@echo "---Recompiling C library---"
-	cd metal-gpu-c && $(MAKE) full
+	cd metal-gpu-c && $(MAKE) install
 	@echo "---Recompiled C library---"
 push_pypi:
 	@echo "---Pushing to PyPi---"

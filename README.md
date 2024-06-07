@@ -7,7 +7,7 @@ This is a simple [python library](https://pypi.org/project/metalgpu/), wrapping 
 ## Installing
 Simply run `pip install metalgpu` to download latest release, and this should be sufficient
 
-If any errors relating to binaries occur, you can recompile them by downloading this repo, and looking into metal-gpu-c and it's associated Makefile. Moving the `lib.so` file to the correct place should fix the issue
+To recompile the underlying C library, go to the plugins directory, and copy a `metal-cpp` folder (Obtained from [this](https://github.com/bkaradzic/metal-cpp)), run `cmake .` and then `make install`. This will then re-compile the binaries, and automatically copy them to the correct directory.
 
 ## Examples
 

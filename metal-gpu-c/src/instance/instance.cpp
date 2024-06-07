@@ -1,8 +1,6 @@
 #include "instance.h"
 
 #include "Foundation/NSString.hpp"
-#include "MTLDevice.hpp"
-#include "MTLResource.hpp"
 
 void Instance::init() {
     device = MTL::CreateSystemDefaultDevice();
