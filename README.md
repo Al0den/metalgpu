@@ -2,7 +2,7 @@
 
 # Metal GPU
 
-This is a simple wrapper around Apple's Metal API, to run compute kernels from python, with full control over buffers and methods. No copying behind the scenes, and raw access to the buffers as numpy arrays
+This is a simple [python library](https://pypi.org/project/metalgpu/), wrapping Apple's Metal API to run compute kernels from python, with full control over buffers and methods. No copying behind the scenes, and raw access to the buffers as numpy arrays
 
 ## Installing
 Simply run `pip install metalgpu` to download latest release, and this should be sufficient
