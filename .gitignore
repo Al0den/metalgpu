@@ -8,7 +8,7 @@ metalgpu/src/shader.metal
 
 *main.out*
 
-examples/Makefile
+*Makefile*
 
 metal-gpu-c/metal-cpp
 metal-gpu-c/.cache/*
