@@ -6,6 +6,8 @@ metalgpu/src/test.py
 metalgpu/src/shader.metal
 .vscode/*
 
+*main.out*
+
 examples/Makefile
 
 metal-gpu-c/metal-cpp
