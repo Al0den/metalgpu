@@ -36,7 +36,7 @@ instance.set_function("adder")
 buffer_size = 100000  # Number of items in the buffer
 buffer_type = "int"
 
-initial_array = np.array([i for i in range(buffer_size)])
+initial_array = [i for i in range(buffer_size)]
 
 buffer1 = instance.array_to_buffer(initial_array)
 buffer2 = instance.array_to_buffer(initial_array)

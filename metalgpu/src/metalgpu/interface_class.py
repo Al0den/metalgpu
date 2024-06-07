@@ -104,7 +104,6 @@ class Buffer:
     def toMetalType(self, numpyType):
         if numpyType == np.int32: return "int"
         elif numpyType == np.float32: return "float"
-        elif numpyType == np.float64: return "double"
         elif numpyType == np.int16: return "half"
         else : raise Exception("[MetalGPU] Type not supported, convert to int32/float")
 
@@ -184,18 +183,30 @@ class Interface:
     def release_buffer(self, bufnum : int):
         self._releaseBuffer(bufnum)
 
-    def array_to_buffer(self, array : np.ndarray):
+    def array_to_buffer(self, array):
+        if isinstance(array, np.ndarray):
+            if array.ndim != 1: raise Exception("[MetalGPU] Array must be 1D")
+        else:
+            array = np.array(array)
+            if array.ndim != 1: raise Exception("[MetalGPU] Array must be 1D")
+
         type = array.dtype
         if type == np.int32: type = ctypes.c_int
         elif type == np.float32: type = ctypes.c_float
-        elif type == np.float64: type = ctypes.c_double
         elif type == np.int16: type = ctypes.c_short
         elif type == np.int8: type = ctypes.c_byte
         elif type == np.uint8: type = ctypes.c_ubyte
         elif type == np.uint16: type = ctypes.c_ushort
         elif type == np.uint32: type = ctypes.c_uint
         elif type == np.uint64: type = ctypes.c_ulonglong
-        elif type == np.int64: raise Exception("[MetalGPU] No support for int64, convert to int32")
+
+        # Cast to types for the unsupported ones, caused by Metal not by choice here.
+        elif type == np.int64:
+            type = ctypes.c_int
+            array = array.astype(np.int32)
+        elif type == np.float64:
+            type = ctypes.c_float
+            array = array.astype(np.float32)
         else: raise Exception("Unsupported data type")
 
         buffer = self.create_buffer(len(array), type)
