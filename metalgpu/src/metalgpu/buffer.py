@@ -71,12 +71,13 @@ class Buffer:
         using namespace metal;
 
         kernel void mul(const device {self.toMetalType(self.contents.dtype)} *arr1 [[buffer(0)]], const device {self.toMetalType(self.contents.dtype)} *arr2 [[buffer(1)]], device {self.toMetalType(self.contents.dtype)} *arr3 [[buffer(2)]], uint id [[thread_position_in_grid]]) {{
-            arr3[id] = arr1[id] * arr2[id];
+            arr3[id] = arr2[id] * arr1[id];
         }};
         """
         prevShader = self.interface._loaded_shader
         shaderFromPath = self.interface._shader_from_path
         self.interface.load_shader_from_string(mul_kernel)
+        self.interface.set_function("mul")
         self.interface.run_function(len(self.contents), [self, other, outBuffer])
         self.interface.load_shader(prevShader) if shaderFromPath else self.interface.load_shader_from_string(prevShader)
         return outBuffer

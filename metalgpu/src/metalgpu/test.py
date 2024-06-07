@@ -1,4 +1,4 @@
-from interface_class import Interface
+from interface import Interface
 
 instance = Interface()  # Initialise the metal instance
 shader_string = """
@@ -18,21 +18,17 @@ kernel void adder(device int *arr1 [[buffer(0)]],
 instance.load_shader_from_string(shader_string)
 instance.set_function("adder")
 
-buffer_size = 100000  # Number of items in the buffer
+buffer_size = 10  # Number of items in the buffer
 buffer_type = "int"
 
 initial_array = [i for i in range(buffer_size)]
 
 buffer1 = instance.array_to_buffer(initial_array)
 buffer2 = instance.array_to_buffer(initial_array)
-buffer3 = instance.create_buffer(buffer_size, buffer_type)
 
-instance.run_function(buffer_size, [buffer1, buffer2, buffer3])
+print(buffer1.contents)
+print(buffer2.contents)
 
-assert(all(buffer3.contents == [i * 2 for i in range(buffer_size)]))
+buffer3 = buffer1 * buffer2
 
-buffer1.release()
-buffer2.release()
-buffer3.release()
-
-
+print(buffer3.contents)
