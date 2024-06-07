@@ -64,15 +64,13 @@ Operators are available on metal buffers, and will __always__ run on the gpu. If
 
 Operators available are:
 `cos`, `sin`, `sqrt`, `tan`
+Note that as of right now, those functions should only be ran on floats or doubles
 
-All of those functions return a new buffer, that is constructed by applying the function to the buffer
 
 You can also use inline operations with buffers, as in:
-
 `buffer1 + buffer2` or `buffer1 - buffer2`
-
 Which will also run on the GPU
 
+All of those functions will return a new buffer, obtained by applying the operator on every element of the buffer
 
-Note that they should be ran on floats as of right now
 
