@@ -77,4 +77,8 @@ Which will also run on the GPU
 
 All of those functions will return a __new buffer__, obtained by applying the operator on every element of the buffer
 
+## Recompiling C libraries.
 
+If you encounter an error regarding a `.dylib` file, or an error that appears to be from the C interface, you need to recompile the C library.
+
+To do this, clone the package's [github repo](https://github.com/Al0den/metalgpu), and go to `metal-gpu-c`. Then, create a copy of the `metal-cpp` folder, that can be found at [this](https://github.com/bkaradzic/metal-cpp) repo. Then, simply run `cmake . && make install`, and it will recompile the library and move it to the correct path.

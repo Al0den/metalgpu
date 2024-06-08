@@ -5,9 +5,9 @@
 This is a simple [python library](https://pypi.org/project/metalgpu/), wrapping Apple's Metal API to run compute kernels from python, with full control over buffers and methods. No copying behind the scenes, and raw access to the buffers as numpy arrays
 
 ## Installing
-Simply run `pip install metalgpu` to download latest release, and this should be sufficient
+Running `pip install metalgpu` to download latest release, and this should be sufficient
 
-To recompile the underlying C library, go to the plugins directory, and copy a `metal-cpp` folder (Obtained from [this](https://github.com/bkaradzic/metal-cpp)), run `cmake .` and then `make install`. This will then re-compile the binaries, and automatically copy them to the correct directory.
+To download from github, run `pip install git+https://github.com/Al0den/metalgpu.git`.
 
 ## Examples
 
@@ -63,6 +63,9 @@ Note: The GPU compute is almost as fast computing 1 million or 10 calculations, 
 ## Documentation
 
 To view the documentation, simply go to the docs folder and view the `docs.md` file
+
+## Known issues
+- The C library only being compiled for ARM based machines. Go to `Recompiling the C library` in the `docs/docs.md` file to recompile the shader
 
 ## Credits
 - [MyMetalKernel.py](https://gist.github.com/alvinwan/f7bb0cdd26c018f40052f9944fc5c679/revisions) Didn't manage to get this to work, overcomplicated for python code
