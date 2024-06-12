@@ -27,7 +27,11 @@ out_np = [np.cos(i) for i in buffer1.contents]
 np_end = time.time()
 
 gpu_start = time.time()
-instance.run_function(buffer_size, [buffer1])
+
+max_width = instance.threadExecutionWidth()
+thread_size = metalgpu.MetalSize(buffer_size, 1, 1)
+
+instance.run_function(thread_size, [buffer1])
 gpu_end = time.time()
 
 print("Cos test - CPU time: ", np_end - np_start)

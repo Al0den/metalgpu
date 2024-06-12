@@ -1,4 +1,4 @@
-from .interface import Interface
+from .interface import Interface, MetalSize
 from .operators import sqrt, cos, sin, tan
 
 import platform

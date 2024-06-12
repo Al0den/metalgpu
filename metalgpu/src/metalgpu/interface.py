@@ -6,11 +6,13 @@ import os
 from .buffer import Buffer
 from .utils import anyToCtypes, anyToMetal, allowedCTypes, allowedNumpyTypes
 
+
 class MetalSize:
     def __init__(self, width, height, depth):
         self.width = width
         self.height = height
         self.depth = depth
+
 
 class Interface:
     def __init__(self) -> None:
@@ -92,7 +94,7 @@ class Interface:
         self._setFunction(function_name.encode('utf-8'))
         self.current_function = function_name
 
-    def run_function(self, received_size: int | MetalSize, buffers: list[int], function_name: str | None = None) -> None:
+    def run_function(self, received_size: int | MetalSize, buffers: list[Buffer], function_name: str | None = None) -> None:
         if isinstance(received_size, int):
             received_size = MetalSize(received_size, 1, 1)
 
