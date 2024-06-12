@@ -14,8 +14,8 @@ def sqrt(buf : Buffer) -> "Buffer":
         arr2[id] = sqrt(arr1[id]);
     }};
     """
-    prevShader = buf.interface._loaded_shader
-    shaderFromPath = buf.interface._shader_from_path
+    prevShader = buf.interface.loaded_shader
+    shaderFromPath = buf.interface.shader_from_path
     buf.interface.load_shader_from_string(sqrt_kernel)
     buf.interface.set_function("sqrt_func")
     buf.interface.run_function(len(buf.contents), [buf, out_buffer])
@@ -34,8 +34,8 @@ def cos(buf : Buffer) -> "Buffer":
         arr2[id] = cos(arr1[id]);
     }};
     """
-    prevShader = buf.interface._loaded_shader
-    shaderFromPath = buf.interface._shader_from_path
+    prevShader = buf.interface.loaded_shader
+    shaderFromPath = buf.interface.shader_from_path
     buf.interface.load_shader_from_string(cos_kernel)
     buf.interface.set_function("cos_func")
     buf.interface.run_function(len(buf.contents), [buf, out_buffer])
@@ -53,8 +53,8 @@ def sin(buf : Buffer) -> "Buffer":
     }};
     """
 
-    prevShader = buf.interface._loaded_shader
-    shaderFromPath = buf.interface._shader_from_path
+    prevShader = buf.interface.loaded_shader
+    shaderFromPath = buf.interface.shader_from_path
     buf.interface.load_shader_from_string(sin_kernel)
     buf.interface.set_function("sin_func")
     buf.interface.run_function(len(buf.contents), [buf, out_buffer])
@@ -72,8 +72,8 @@ def tan(buf : Buffer) -> "Buffer":
         arr2[id] = tan(arr1[id]);
     }};
     """
-    prevShader = buf.interface._loaded_shader
-    shaderFromPath = buf.interface._shader_from_path
+    prevShader = buf.interface.loaded_shader
+    shaderFromPath = buf.interface.shader_from_path
     buf.interface.load_shader_from_string(tan_kernel)
     buf.interface.set_function("tan_func")
     buf.interface.run_function(len(buf.contents), [buf, out_buffer])

@@ -30,8 +30,8 @@ class Buffer:
         }};
         """
 
-        prevShader = self.interface._loaded_shader
-        shaderFromPath = self.interface._shader_from_path
+        prevShader = self.interface.loaded_shader
+        shaderFromPath = self.interface.shader_from_path
         prevFunction = self.interface.current_function
         self.interface.load_shader_from_string(add_kernel)
         self.interface.set_function("add")
@@ -53,8 +53,8 @@ class Buffer:
             arr3[id] = arr1[id] - arr2[id];
         }};
         """
-        prevShader = self.interface._loaded_shader
-        shaderFromPath = self.interface._shader_from_path
+        prevShader = self.interface.loaded_shader
+        shaderFromPath = self.interface.shader_from_path
         prevFunction = self.interface.current_function
         self.interface.load_shader_from_string(sub_kernel)
         self.interface.set_function("sub")
@@ -77,8 +77,8 @@ class Buffer:
             arr3[id] = arr2[id] * arr1[id];
         }};
         """
-        prevShader = self.interface._loaded_shader
-        shaderFromPath = self.interface._shader_from_path
+        prevShader = self.interface.loaded_shader
+        shaderFromPath = self.interface.shader_from_path
         prevFunction = self.interface.current_function
         self.interface.load_shader_from_string(mul_kernel)
         self.interface.set_function("mul")
@@ -98,8 +98,8 @@ class Buffer:
             arr2[id] = float(arr1[id]);
         }};
         """
-        prevShader = self.interface._loaded_shader
-        shaderFromPath = self.interface._shader_from_path
+        prevShader = self.interface.loaded_shader
+        shaderFromPath = self.interface.shader_from_path
         prevFunction = self.interface.current_function
         self.interface.load_shader_from_string(cast_kernel)
         self.interface.set_function("cast")
