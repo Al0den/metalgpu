@@ -28,8 +28,8 @@ extern "C" {
         mainInstance->setFunction(funcname);
     }
 
-    void runFunction(int numThreads, int *requestedBuffers, int numRequestedBuffers) {
-        mainInstance->runFunction(numThreads, requestedBuffers, numRequestedBuffers);
+    void runFunction(int *MetalSize, int *requestedBuffers, int numRequestedBuffers) {
+        mainInstance->runFunction(MetalSize, requestedBuffers, numRequestedBuffers);
     }
 
     void releaseBuffer(int bufnum) {
@@ -47,6 +47,14 @@ extern "C" {
 
     void createLibraryFromString(const char* string) {
         mainInstance->createLibraryFromString(string);
+    }
+
+    int maxThreadsPerGroup() {
+        return mainInstance->maxThreadsPerGroup();
+    }
+
+    int threadExecutionWidth() {
+        return mainInstance->threadExecutionWidth();
     }
 }
 

@@ -3,7 +3,7 @@ from .utils import anyToMetal, allowedCTypesPointer
 
 class Buffer:
     def __init__(self, buffPointer : allowedCTypesPointer, buffSize : int, interface, bufNum : int) -> None:
-        self.contents = np.ctypeslib.as_array(buffPointer, shape=(buffSize,))
+        self.contents : np.ndarray = np.ctypeslib.as_array(buffPointer, shape=(buffSize,))
         self.bufNum = bufNum
         self.interface = interface
         self.bufType = self.contents.dtype

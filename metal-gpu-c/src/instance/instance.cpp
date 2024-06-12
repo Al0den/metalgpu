@@ -91,6 +91,20 @@ void Instance::setFunction(const char *funcname) {
     }
 }
 
+int Instance::maxThreadsPerGroup() {
+    if (function == NULL) {
+        return -1;
+    }
+    return functionPSO->maxTotalThreadsPerThreadgroup();
+}
+
+int Instance::threadExecutionWidth() {
+    if (function == NULL) {
+        return -1;
+    }
+    return functionPSO->threadExecutionWidth();
+}
+
 int Instance::createBuffer(int bufsize) {
     MTL::Buffer *buffer = device->newBuffer(bufsize, MTL::ResourceStorageModeShared);
 
@@ -107,7 +121,7 @@ int Instance::createBuffer(int bufsize) {
     return totbuf;
 }
  
-void Instance::runFunction(int numThreads, int *requestedBuffers, int numRequestedBuffers) {
+void Instance::runFunction(int *MetalSize, int *requestedBuffers, int numRequestedBuffers) {
     MTL::CommandBuffer *commandBuffer = commandQueue->commandBuffer();
     MTL::ComputeCommandEncoder *encoder = commandBuffer->computeCommandEncoder();
     encoder->setComputePipelineState(functionPSO);
@@ -118,14 +132,24 @@ void Instance::runFunction(int numThreads, int *requestedBuffers, int numRequest
         encoder->setBuffer(buffers[requestedBuffers[i]].buffer, 0, i);
     }
 
-    MTL::Size gridSize = MTL::Size(numThreads, 1, 1);
+    MTL::Size gridSize = MTL::Size(MetalSize[0], MetalSize[1], MetalSize[2]);
 
-    NS::UInteger threadsGroupSize = NS::UInteger(numThreads);
+    NS::UInteger threadsGroupSize = NS::UInteger(MetalSize[0]);
+    NS::UInteger threadExecutionWidth = NS::UInteger(MetalSize[1]);
+
     if(threadsGroupSize > functionPSO->maxTotalThreadsPerThreadgroup()) {
         threadsGroupSize = functionPSO->maxTotalThreadsPerThreadgroup();
     }
 
-    MTL::Size threadsPerGroup = MTL::Size(threadsGroupSize, 1, 1);
+    if(threadExecutionWidth > functionPSO->threadExecutionWidth()) {
+        threadExecutionWidth = functionPSO->threadExecutionWidth();
+    }
+
+    if(threadsGroupSize % threadExecutionWidth != 0) {
+        threadsGroupSize = threadsGroupSize - (threadsGroupSize % threadExecutionWidth);
+    }
+
+    MTL::Size threadsPerGroup = MTL::Size(threadsGroupSize, threadExecutionWidth, MetalSize[2]);
 
     encoder->dispatchThreads(gridSize, threadsPerGroup);
 
