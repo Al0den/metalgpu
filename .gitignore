@@ -1,0 +1,35 @@
+metalgpu/dist/*
+*__pycache__*
+test/*
+.DS_Store
+metalgpu/src/test.py
+metalgpu/src/shader.metal
+.vscode/*
+
+*main.out*
+
+*Makefile*
+
+metal-gpu-c/metal-cpp
+metal-gpu-c/.cache/*
+metal-gpu-c/compile_commands.json
+metal-gpu-c/src/test.metal
+
+metalgpu/src/metalgpu/metagpu.egg-info/*
+
+# cmake files
+metal-gpu-c/Makefile
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+
+#poetry files
+metalgpu/build/*
+metalgpu/poetry.lock
+metalgpu/src/metalgpu.egg-info/*
+
+metalgpu/src/metalgpu/lib/*
+lib/*
+metal-gpu-c/libmetalgpucpp-arm.dylib
+metalgpu/pyproject.toml
