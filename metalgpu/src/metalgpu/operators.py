@@ -52,6 +52,7 @@ def sin(buf : Buffer) -> "Buffer":
         arr2[id] = sin(arr1[id]);
     }};
     """
+
     prevShader = buf.interface._loaded_shader
     shaderFromPath = buf.interface._shader_from_path
     buf.interface.load_shader_from_string(sin_kernel)
