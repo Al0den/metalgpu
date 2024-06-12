@@ -7,7 +7,7 @@ from .buffer import Buffer
 from .utils import anyToCtypes, anyToMetal, allowedCTypes
 
 class Interface:
-    def __init__(self):
+    def __init__(self) -> None:
         _objPath = os.path.dirname(__file__)
 
         assert os.path.isfile(_objPath + "/lib/libmetalgpucpp-arm.dylib"), "[MetalGPU] Library not found, please run `python -m metalgpu build`"
@@ -28,10 +28,10 @@ class Interface:
         self.load_shader_from_string(self._loaded_shader)
         self.set_function("emptyFunc")
 
-    def __del__(self):
+    def __del__(self) -> None:
         self._deleteInstance()
 
-    def _init_functions(self):
+    def _init_functions(self) -> None:
         self._init = self._metal.init
         self._createBuffer = self._metal.createBuffer
         self._createLibrary = self._metal.createLibrary
@@ -62,7 +62,7 @@ class Interface:
         self._deleteInstance.restype = None
         self._createLibraryFromString.argtypes = [ctypes.c_char_p]
 
-    def create_buffer(self, bufsize : int, bufferTypeRaw : str | np.ndarray | allowedCTypes):
+    def create_buffer(self, bufsize : int, bufferTypeRaw : str | np.ndarray | allowedCTypes) -> "Buffer":
         assert bufsize > 0, "[MetalGPU] Buffer size must be greater than 0"
         bufType = anyToCtypes(bufferTypeRaw)
         number = self._createBuffer(ctypes.sizeof(bufType) * bufsize)
@@ -71,16 +71,16 @@ class Interface:
         buff = Buffer(buffPointer, bufsize, self, number)
         return buff
 
-    def load_shader(self, shaderPath : str):
+    def load_shader(self, shaderPath : str) -> None:
         self._createLibrary(shaderPath.encode('utf-8'))
         self._loaded_shader = shaderPath
         self._shader_from_path = True
 
-    def set_function(self, functionName : str):
+    def set_function(self, functionName : str) -> None:
         self._setFunction(functionName.encode('utf-8'))
         self.current_function = functionName
 
-    def run_function(self, numThreads : int, buffers : list):
+    def run_function(self, numThreads : int, buffers : list) -> None:
         bufferList = []
         for buff in buffers:
             if buff is None:
@@ -93,10 +93,10 @@ class Interface:
         bufferArr = np.array(bufferList).astype(np.int32)
         self._runFunction(numThreads, bufferArr.ctypes.data_as(ctypes.POINTER(ctypes.c_int)), len(bufferArr))
 
-    def release_buffer(self, bufnum : int):
+    def release_buffer(self, bufnum : int) -> None:
         self._releaseBuffer(bufnum)
 
-    def array_to_buffer(self, array : np.ndarray | list):
+    def array_to_buffer(self, array : np.ndarray | list) -> "Buffer":
         array = np.array(array)
         if array.ndim != 1: raise Exception("[MetalGPU] Array must be 1D")
 
@@ -107,7 +107,7 @@ class Interface:
         buffer.contents[:] = array
         return buffer
 
-    def load_shader_from_string(self, libStr : str):
+    def load_shader_from_string(self, libStr : str) -> None:
         self._createLibraryFromString(libStr.encode('utf-8'))
         self._loaded_shader = libStr
         self._shader_from_path = False

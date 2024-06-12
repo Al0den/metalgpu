@@ -17,21 +17,21 @@ allowedCTypes = ctypes.c_int | ctypes.c_float | ctypes.c_int16 | ctypes.c_bool |
 allowedCTypesPointer = ctypes.POINTER(ctypes.c_int) | ctypes.POINTER(ctypes.c_float) | ctypes.POINTER(ctypes.c_int16) | ctypes.POINTER(ctypes.c_bool) | ctypes.POINTER(ctypes.c_long) | ctypes.POINTER(ctypes.c_ulong) | ctypes.POINTER(ctypes.c_uint) | ctypes.POINTER(ctypes.c_uint16) | ctypes.POINTER(ctypes.c_uint32) | ctypes.POINTER(ctypes.c_uint64)
 allowedNumpyTypes = np.int32 | np.float32 | np.int16 | np.bool_ | np.int64 | np.uint64 | np.uint32 | np.uint16
 
-def anyToMetal(receivedType : str | allowedNumpyTypes | allowedCTypes):
+def anyToMetal(receivedType : str | allowedNumpyTypes | allowedCTypes) -> str:
     for table in tables:
         if receivedType in table:
             return table[0]
     raise TypeError("[MetalGPU] Unsupported data type")
 
 
-def anyToCtypes(receivedType : str | allowedNumpyTypes | allowedCTypes):
+def anyToCtypes(receivedType : str | allowedNumpyTypes | allowedCTypes) -> allowedCTypes:
     for table in tables:
         if receivedType in table:
             return table[2]
     raise TypeError("[MetalGPU] Unsupported data type")
 
 
-def anyToNumpy(receivedType : str | allowedNumpyTypes | allowedCTypes):
+def anyToNumpy(receivedType : str | allowedNumpyTypes | allowedCTypes) -> allowedNumpyTypes:
     for table in tables:
         if receivedType in table:
             return table[1]

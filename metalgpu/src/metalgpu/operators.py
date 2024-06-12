@@ -3,7 +3,7 @@ import numpy as np
 from .buffer import Buffer
 from .utils import anyToMetal
 
-def sqrt(buf : Buffer):
+def sqrt(buf : Buffer) -> "Buffer":
     out_buffer = buf.interface.create_buffer(len(buf.contents), anyToMetal(buf.contents.dtype))
     sqrt_kernel = f"""
     #include <metal_stdlib>
@@ -23,7 +23,7 @@ def sqrt(buf : Buffer):
     return out_buffer
 
 
-def cos(buf : Buffer):
+def cos(buf : Buffer) -> "Buffer":
     out_buffer = buf.interface.create_buffer(len(buf.contents), anyToMetal(buf.contents.dtype))
     cos_kernel = f"""
     #include <metal_stdlib>
@@ -42,7 +42,7 @@ def cos(buf : Buffer):
     buf.interface.load_shader(prevShader) if shaderFromPath else buf.interface.load_shader_from_string(prevShader)
     return out_buffer
 
-def sin(buf : Buffer):
+def sin(buf : Buffer) -> "Buffer":
     if(buf.contents.dtype != np.float32 and buf.contents.dtype != np.float64): raise TypeError("[MetalGPU] Buffer data type must be float or double")
     out_buffer = buf.interface.create_buffer(len(buf.contents), anyToMetal(buf.contents.dtype))
     sin_kernel = f"""
@@ -61,7 +61,7 @@ def sin(buf : Buffer):
     return out_buffer
 
 
-def tan(buf : Buffer):
+def tan(buf : Buffer) -> "Buffer":
     if(buf.contents.dtype != np.float32 and buf.contents.dtype != np.float64): raise TypeError("[MetalGPU] Buffer data type must be float or double")
     out_buffer = buf.interface.create_buffer(len(buf.contents), anyToMetal(buf.contents.dtype))
     tan_kernel = f"""

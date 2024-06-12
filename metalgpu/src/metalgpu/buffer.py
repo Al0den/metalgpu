@@ -2,20 +2,20 @@ import numpy as np
 from .utils import anyToMetal, allowedCTypesPointer
 
 class Buffer:
-    def __init__(self, buffPointer : allowedCTypesPointer, buffSize : int, interface, bufNum : int):
+    def __init__(self, buffPointer : allowedCTypesPointer, buffSize : int, interface, bufNum : int) -> None:
         self.contents = np.ctypeslib.as_array(buffPointer, shape=(buffSize,))
         self.bufNum = bufNum
         self.interface = interface
         self.bufType = self.contents.dtype
 
-    def release(self):
+    def release(self) -> None:
         self.interface.release_buffer(self.bufNum)
         self.contents = np.array([])
 
-    def __del__(self):
+    def __del__(self) -> None:
         self.release()
 
-    def __add__(self, other : "Buffer"):
+    def __add__(self, other : "Buffer") -> "Buffer":
         assert(len(self.contents) == len(other.contents)), "[MetalGPU] Buffers must be of the same content size"
         assert(self.contents.dtype == other.contents.dtype), "[MetalGPU] Buffers must be of the same data type"
         outBuffer = self.interface.create_buffer(len(self.contents), anyToMetal(self.contents.dtype))
@@ -40,7 +40,7 @@ class Buffer:
         self.interface.set_function(prevFunction)
         return outBuffer
 
-    def __sub__(self, other : "Buffer"):
+    def __sub__(self, other : "Buffer") -> "Buffer":
         assert(len(self.contents) == len(other.contents)), "[MetalGPU] Buffers must be of the same content size"
         assert(self.contents.dtype == other.contents.dtype), "[MetalGPU] Buffers must be of the same data type"
         outBuffer = self.interface.create_buffer(len(self.contents), anyToMetal(self.contents.dtype))
@@ -63,7 +63,7 @@ class Buffer:
         self.interface.set_function(prevFunction)
         return outBuffer
 
-    def __mul__(self, other : "Buffer"):
+    def __mul__(self, other : "Buffer") -> "Buffer":
         assert(len(self.contents) == len(other.contents)), "[MetalGPU] Buffers must be of the same content size"
         assert(self.contents.dtype == other.contents.dtype), "[MetalGPU] Buffers must be of the same data type"
 
@@ -87,7 +87,7 @@ class Buffer:
         self.interface.set_function(prevFunction)
         return outBuffer
 
-    def astype(self, targetType):
+    def astype(self, targetType) -> "Buffer":
         new_buf = self.interface.create_buffer(len(self.contents), targetType)
         cast_kernel = f"""
         #include <metal_stdlib>
