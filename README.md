@@ -1,4 +1,4 @@
-![Build Status](https://github.com/Al0den/metalgpu/actions/workflows/python-package.yml/badge.svg)
+[![Python application](https://github.com/Al0den/metalgpu/actions/workflows/python-app.yml/badge.svg)](https://github.com/Al0den/metalgpu/actions/workflows/python-app.yml)
 
 # Metal GPU
 
