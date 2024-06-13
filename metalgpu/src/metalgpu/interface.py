@@ -86,7 +86,7 @@ class Interface:
         self.__setFunction(function_name.encode('utf-8'))
         self.current_function = function_name
 
-    def run_function(self, received_size: int | MetalSize, buffers: list[Buffer], function_name: str | None = None, wait_for_completion : bool = False) -> None:
+    def run_function(self, received_size: int | MetalSize, buffers: list[Buffer], function_name: str | None = None, wait_for_completion : bool = True) -> None:
         if isinstance(received_size, int):
             received_size = MetalSize(received_size, 1, 1)
 
