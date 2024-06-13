@@ -83,3 +83,15 @@ If you encounter an error regarding a `.dylib` file, or an error that appears to
 
 To do this, clone the package's [github repo](https://github.com/Al0den/metalgpu), and go to `metal-gpu-c`. Then, create a copy of the `metal-cpp` folder, that can be found at [this](https://github.com/bkaradzic/metal-cpp) repo. Then, simply run `cmake . && make install`, and it will recompile the library and move it to the correct path.
 Then, go to said path (`metalgpu/src/metalgpu/lib/`), and rename from `libmetalgpucpp-arm.dylib` to `libmetalgpucpp-x86.dylib`
+
+## Misc Functions
+
+### Interface.threadExecutionWidth()
+
+Returns the current function's threadExecutionWidth, as per the [Metal Shader Langage specifications](https://developer.apple.com/metal/Metal-Shading-Language-Specification.pdf). Refer to them for more information.
+
+### Interface.maxThreadsPerGroup()
+
+Returns the current function's maxThreadsPerGroup, as per the [Metal Shader Langage specifications](https://developer.apple.com/metal/Metal-Shading-Language-Specification.pdf). Refer to them for more information.
+
+
