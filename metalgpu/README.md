@@ -1,13 +1,16 @@
-![Build Status](https://github.com/Al0den/metalgpu/actions/workflows/python-package.yml/badge.svg)
+[![Python application](https://github.com/Al0den/metalgpu/actions/workflows/python-app.yml/badge.svg)](https://github.com/Al0den/metalgpu/actions/workflows/python-app.yml)
 
 # Metal GPU
 
-This is a simple [python library](https://pypi.org/project/metalgpu/), wrapping Apple's Metal API to run compute kernels from python, with full control over buffers and methods. No copying behind the scenes, and raw access to the buffers as numpy arrays
+This is a simple python library, wrapping Apple's Metal API to run compute kernels from python, with full control over buffers and methods. No copying behind the scenes, and raw access to the buffers as numpy arrays
 
 ## Installing
-Simply run `pip install metalgpu` to download latest release, and this should be sufficient
+Running `pip install metalgpu` to download latest release. After the first install, you will need to compile the C library.
 
-If any errors relating to binaries occur, you can recompile them by downloading this repo, and looking into metal-gpu-c and it's associated Makefile. Moving the `lib.so` file to the correct place should fix the issue
+To do so, simply run in your terminal `python -m metalgpu build`, and let it build the library. This leaves no files behind, apart from the compiled library.
+
+Note: You need to have the git command line to use this tool, otherwise manually compile the folder `metal-gpu-c` and move the output library to the lib folder
+
 
 ## Examples
 
@@ -64,7 +67,10 @@ Note: The GPU compute is almost as fast computing 1 million or 10 calculations, 
 
 To view the documentation, simply go to the docs folder and view the `docs.md` file
 
+## Known issues
+- None :)
+
 ## Credits
+- [metalcpp](https://github.com/bkaradzic/metal-cpp) The wrapper from Objective-C to Metal, that is used to interact with Metal
 - [MyMetalKernel.py](https://gist.github.com/alvinwan/f7bb0cdd26c018f40052f9944fc5c679/revisions) Didn't manage to get this to work, overcomplicated for python code
 - [metalcompute](https://github.com/baldand/py-metal-compute) Although similar, performs lots of array copies instead of buffer management, and has some memory leaks. 
-

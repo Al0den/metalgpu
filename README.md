@@ -9,6 +9,8 @@ Running `pip install metalgpu` to download latest release. After the first insta
 
 To do so, simply run in your terminal `python -m metalgpu build`, and let it build the library. This leaves no files behind, apart from the compiled library.
 
+Alternatively, simply run `pip install metalgpu && python -m metalgpu build`
+
 Note: You need to have the git command line to use this tool, otherwise manually compile the folder `metal-gpu-c` and move the output library to the lib folder
 
 

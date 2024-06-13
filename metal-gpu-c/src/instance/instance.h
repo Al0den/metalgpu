@@ -13,7 +13,7 @@ class Instance {
         void createLibraryFromString(const char *fileString);
         void setFunction(const char *funcname);
         void releaseBuffer(int bufnum);
-        void runFunction(int *MetalSize, int *requestedBuffers, int numRequestedBuffers);
+        void runFunction(int *MetalSize, int *requestedBuffers, int numRequestedBuffers, bool waitForCompletion);
 
         int maxThreadsPerGroup();
         int threadExecutionWidth();

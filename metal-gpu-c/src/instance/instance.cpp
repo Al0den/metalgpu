@@ -46,6 +46,7 @@ void Instance::createLibrary(const char *filename) {
 
     errPtr = nullptr;
     MTL::CompileOptions *options = nullptr;
+
     if (library != NULL) {
         library->release();
     }
@@ -121,7 +122,7 @@ int Instance::createBuffer(int bufsize) {
     return totbuf;
 }
  
-void Instance::runFunction(int *MetalSize, int *requestedBuffers, int numRequestedBuffers) {
+void Instance::runFunction(int *MetalSize, int *requestedBuffers, int numRequestedBuffers, bool waitForCompletion) {
     MTL::CommandBuffer *commandBuffer = commandQueue->commandBuffer();
     MTL::ComputeCommandEncoder *encoder = commandBuffer->computeCommandEncoder();
     encoder->setComputePipelineState(functionPSO);
@@ -156,7 +157,12 @@ void Instance::runFunction(int *MetalSize, int *requestedBuffers, int numRequest
     encoder->endEncoding();
     commandBuffer->commit();
 
-    commandBuffer->waitUntilCompleted();
+    if(waitForCompletion) {
+        commandBuffer->waitUntilCompleted();
+    }
+
+    return;
+
 }
 
 void Instance::releaseBuffer(int bufnum) {

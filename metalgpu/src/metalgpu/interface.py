@@ -5,6 +5,7 @@ import os
 
 from .buffer import Buffer
 from .utils import anyToCtypes, anyToMetal, allowedCTypes, allowedNumpyTypes
+from .shader import initial_shader
 
 
 class MetalSize:
@@ -23,17 +24,8 @@ class Interface:
 
         self.__init_functions()
         self.__init()
-        self.loaded_shader = """
-        #include <metal_stdlib>
 
-        using namespace metal;
-
-        kernel void emptyFunc() {};
-        """
-        self.shader_from_path = False
-        self.current_function = "emptyFunc"
-
-        self.load_shader_from_string(self.loaded_shader)
+        self.load_shader_from_string(initial_shader())
         self.set_function("emptyFunc")
 
     def __del__(self) -> None:
