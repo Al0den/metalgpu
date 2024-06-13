@@ -28,8 +28,8 @@ extern "C" {
         mainInstance->setFunction(funcname);
     }
 
-    void runFunction(int *MetalSize, int *requestedBuffers, int numRequestedBuffers) {
-        mainInstance->runFunction(MetalSize, requestedBuffers, numRequestedBuffers);
+    void runFunction(int *MetalSize, int *requestedBuffers, int numRequestedBuffers, bool waitForCompletion) {
+        mainInstance->runFunction(MetalSize, requestedBuffers, numRequestedBuffers, waitForCompletion);
     }
 
     void releaseBuffer(int bufnum) {

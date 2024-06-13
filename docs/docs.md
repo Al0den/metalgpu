@@ -34,11 +34,13 @@ Returns a new buffer, created to hold bufferSize elements of type bufferType. Th
 Returns a new buffer, and copies the array content to said buffer.
 - array: A numpy array or python list that will be copied into the buffer
 
-### Interface.run_function(numThreads, buffers)
+### Interface.run_function(received_size, buffers, function_name, waitForCompletion)
 
 Runs the currently set function.
-- numThreads: The number of GPU threads that will be started
+- received_size: A MetalSize class, or an integer, representing how the GPU will compute the data. 
 - buffers: A list of buffers that will be sent to the GPU. The first element of the list will be associated with buffer number 0, the second with 1, etc. If you do not want to associate a buffer with the nth slot, use a None in the list, and continue with the following buffers.
+- function_name (Optional): A function name, implicitely calls `Interface.set_function`
+- waitForCompletion (Optional): Wait for GPU to be finished or not. Default is `True`
 
 ## Buffer
 

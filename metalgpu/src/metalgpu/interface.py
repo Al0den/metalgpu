@@ -48,7 +48,7 @@ class Interface:
         self.__createBuffer.argtypes = [ctypes.c_int]
         self.__createLibrary.argtypes = [ctypes.c_char_p]
         self.__setFunction.argtypes = [ctypes.c_char_p]
-        self.__runFunction.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int), ctypes.c_int]
+        self.__runFunction.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int), ctypes.c_int, ctypes.c_bool]
         self.__releaseBuffer.argtypes = [ctypes.c_int]
         self.__getBufferPointer.argtypes = [ctypes.c_int]
         self.__deleteInstance.argtypes = []
@@ -86,7 +86,7 @@ class Interface:
         self.__setFunction(function_name.encode('utf-8'))
         self.current_function = function_name
 
-    def run_function(self, received_size: int | MetalSize, buffers: list[Buffer], function_name: str | None = None) -> None:
+    def run_function(self, received_size: int | MetalSize, buffers: list[Buffer], function_name: str | None = None, wait_for_completion : bool = False) -> None:
         if isinstance(received_size, int):
             received_size = MetalSize(received_size, 1, 1)
 
@@ -108,7 +108,7 @@ class Interface:
         metalSizePointer = metalSize.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
         bufferPointer = bufferArr.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
 
-        self.__runFunction(metalSizePointer, bufferPointer, len(bufferArr))
+        self.__runFunction(metalSizePointer, bufferPointer, len(bufferArr), wait_for_completion)
 
     def release_buffer(self, bufnum: int) -> None:
         self.__releaseBuffer(bufnum)
