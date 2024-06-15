@@ -29,6 +29,8 @@ Returns a new buffer, created to hold bufferSize elements of type bufferType. Th
 - bufferSize: The number of elements the buffer will be able to hold
 - bufferType: The type of items that will be used. Can be a ctype or a string, that will then be resolved to a ctype
 
+Note: Buffers are associated to their interface, and their isn't a way to transfer them to another one as of right now.
+
 ### Interface.array_to_buffer(array)
 
 Returns a new buffer, and copies the array content to said buffer.
