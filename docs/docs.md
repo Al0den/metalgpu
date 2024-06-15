@@ -4,7 +4,7 @@ This is the documentation for the python library metalgpu.
 
 ## Interface
 
-An Interface is the wrapper around the metal functions and their associated buffers. At no point in time should two interfaces co-exist, as the C extension only allows a single one present at a time.
+An Interface is the wrapper around the metal functions and their associated buffers.  
 
 To delete an Interface, simply use `del interface` and it will automatically free up all buffers.
 
