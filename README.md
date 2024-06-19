@@ -39,7 +39,7 @@ instance.load_shader_from_string(shader_string)
 instance.set_function("adder")
 
 buffer_size = 100000  # Number of items in the buffer
-buffer_type = "int"
+buffer_type = "int" # Or np.int32, ctype.c_int32
 
 initial_array = [i for i in range(buffer_size)]
 

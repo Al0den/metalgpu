@@ -9,6 +9,8 @@ Running `pip install metalgpu` to download latest release. After the first insta
 
 To do so, simply run in your terminal `python -m metalgpu build`, and let it build the library. This leaves no files behind, apart from the compiled library.
 
+Alternatively, simply run `pip install metalgpu && python -m metalgpu build`
+
 Note: You need to have the git command line to use this tool, otherwise manually compile the folder `metal-gpu-c` and move the output library to the lib folder
 
 
@@ -37,7 +39,7 @@ instance.load_shader_from_string(shader_string)
 instance.set_function("adder")
 
 buffer_size = 100000  # Number of items in the buffer
-buffer_type = "int"
+buffer_type = "int" # Or np.int32, ctype.c_int32
 
 initial_array = [i for i in range(buffer_size)]
 
@@ -71,6 +73,5 @@ To view the documentation, simply go to the docs folder and view the `docs.md` f
 - None :)
 
 ## Credits
-- [metalcpp](https://github.com/bkaradzic/metal-cpp) The wrapper from Objective-C to Metal, that is used to interact with Metal
 - [MyMetalKernel.py](https://gist.github.com/alvinwan/f7bb0cdd26c018f40052f9944fc5c679/revisions) Didn't manage to get this to work, overcomplicated for python code
 - [metalcompute](https://github.com/baldand/py-metal-compute) Although similar, performs lots of array copies instead of buffer management, and has some memory leaks. 
