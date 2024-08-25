@@ -51,7 +51,7 @@ instance.run_function(buffer_size, [buffer1, buffer2, buffer3])
 
 assert(all(buffer3.contents == [i * 2 for i in range(buffer_size)]))
 
-buffer1.release() # This isnt required, pythons should automatically release it
+buffer1.release() # This isnt required, python can do it alone
 buffer2.release()
 buffer3.release()
 ```
@@ -65,9 +65,12 @@ When tested using performance.py, on Apple Silicon M1 Pro, base specs:
 | Calculating 10 million square roots  | 3.737s | 0.00694s |
 
 Note: The GPU compute is almost as fast computing 1 million or 10 calculations, being limited by throughput to about 0.001s minimum per function run.
+
 ## Documentation
 
 To view the documentation, simply go to the docs folder and view the `docs.md` file
+
+The code related to the C interface can be found in `/metal-gpu-c`. The code related to the python package can be found in `/metal-gpu`
 
 ## Known issues
 - None :)

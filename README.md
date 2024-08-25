@@ -51,7 +51,7 @@ instance.run_function(buffer_size, [buffer1, buffer2, buffer3])
 
 assert(all(buffer3.contents == [i * 2 for i in range(buffer_size)]))
 
-buffer1.release()
+buffer1.release() # This isnt required, python can do it alone
 buffer2.release()
 buffer3.release()
 ```

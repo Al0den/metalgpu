@@ -3,6 +3,7 @@ import numpy as np
 from .utils import anyToMetal, allowedCTypesPointer
 from .shader import add_func_kernel, sub_func_kernel, mul_func_kernel, cast_func_kernel
 
+
 class Buffer:
     def __init__(self, buffPointer : allowedCTypesPointer, buffSize : int, interface, bufNum : int) -> None:
         self.contents : np.ndarray = np.ctypeslib.as_array(buffPointer, shape=(buffSize,))
