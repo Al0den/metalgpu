@@ -33,7 +33,7 @@ kernel void adder(device int *arr1 [[buffer(0)]],
     arr3[id] = arr2[id] + arr1[id];
 }
 """
-# Note: For clearer code, use instance.load_shader(shaderPath) to load a metal file
+# Note: For clearer code, use instance.load_shader(shaderPath) to load a .metal file
 
 instance.load_shader_from_string(shader_string)
 instance.set_function("adder")
@@ -70,7 +70,7 @@ Note: The GPU compute is almost as fast computing 1 million or 10 calculations, 
 
 To view the documentation, simply go to the docs folder and view the `docs.md` file
 
-The code related to the C interface can be found in `/metal-gpu-c`. The code related to the python package can be found in `/metal-gpu`
+The code related to the C interface can be found in `/metal-gpu-c`. The code related to the python package can be found in `/metalgpu`
 
 ## Known issues
 - None :)
