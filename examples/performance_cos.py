@@ -17,13 +17,13 @@ kernel void cos_func(device float* arr[[buffer(0)]], uint id [[thread_position_i
 instance.load_shader_from_string(shader_str)
 instance.set_function("cos_func")
 
-buffer_size = 1000000
+buffer_size = 100000000
 
 buffer1 = instance.create_buffer(buffer_size, "float")
 buffer1.contents[:] = [i/buffer_size for i in range(buffer_size)]
 
 np_start = time.time()
-out_np = [np.cos(i) for i in buffer1.contents]
+out_np = np.cos(buffer1.contents)
 np_end = time.time()
 
 gpu_start = time.time()
