@@ -135,3 +135,4 @@ class Interface:
 
     def maxThreadsPerGroup(self):
         return self.__maxThreadsPerGroup()
+

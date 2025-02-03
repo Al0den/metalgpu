@@ -38,7 +38,7 @@ extern "C" {
 
     void deleteInstance() {
         delete mainInstance;
-        mainInstance = NULL;
+        mainInstance = nullptr;
     }
 
     void *getBufferPointer(int bufnum) {
