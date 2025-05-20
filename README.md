@@ -57,14 +57,10 @@ buffer3.release()
 ```
 
 ## Performance
-When tested using performance.py, on Apple Silicon M1 Pro, base specs:
+When tested using performance_suite.py, on Apple Silicon M1 Pro, base specs:
 
-| Function | CPU Compute Time | GPU Compute Time |
-|---|---|---|
-| Calculating 100 million cos values  | 0.249s  | 0.0198s |
-| Calculating 100 million square roots  | 0.084s | 0.0200s |
+![image](https://github.com/user-attachments/assets/0192454d-0050-4cc5-8925-e298bddf361a)
 
-Note: The GPU compute is almost as fast computing 1 million or 10 calculations, being limited by throughput to about 0.001s minimum per function run.
 
 ## Documentation
 
