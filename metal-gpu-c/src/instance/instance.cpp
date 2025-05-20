@@ -1,37 +1,41 @@
 #include "instance.h"
 
+#include <cstring>
+#include <iostream>
+#include <cmath> // Added for std::sqrt and std::floor
+
 #include "Foundation/NSString.hpp"
 
 void Instance::init() {
     device = MTL::CreateSystemDefaultDevice();
     if (!device) {
-        error(std::string("Failed to create MTL Default device"));
+        throw std::runtime_error("No Metal device found");
     }
 
     commandQueue = device->newCommandQueue();
     totbuf = -1;
-    buffers = NULL;
-    functionPSO = NULL;
-    function = NULL;
-    library = NULL;
+    buffers = nullptr;
+    functionPSO = nullptr;
+    function = nullptr;
+    library = nullptr;
     errPtr = nullptr;
 }
 
 Instance::~Instance() {
     for (int i = 0; i <= totbuf; i++) {
-        if (buffers[i].buffer != NULL) {
+        if (buffers[i].buffer != nullptr) {
             buffers[i].buffer->release();
         }
     }
     free(buffers);
  
-    if (functionPSO != NULL) {
+    if (functionPSO != nullptr) {
         functionPSO->release();
     }
-    if (function != NULL) {
+    if (function != nullptr) {
         function->release();
     }
-    if (library != NULL) {
+    if (library != nullptr) {
         library->release();
     }
 }
@@ -47,12 +51,12 @@ void Instance::createLibrary(const char *filename) {
     errPtr = nullptr;
     MTL::CompileOptions *options = nullptr;
 
-    if (library != NULL) {
+    if (library != nullptr) {
         library->release();
     }
     library = device->newLibrary(source_code, options, &errPtr);
 
-    if (library == NULL) { 
+    if (library == nullptr) { 
         std::cout << errPtr->localizedDescription()->utf8String() << std::endl;
     }
 }
@@ -61,11 +65,11 @@ void Instance::createLibraryFromString(const char *fileString) {
     NS::String *source_code = NS::String::string(fileString, NS::StringEncoding::UTF8StringEncoding);
     errPtr = nullptr;
     MTL::CompileOptions *options = nullptr;
-    if (library != NULL) {
+    if (library != nullptr) {
         library->release();
     }
     library = device->newLibrary(source_code, options, &errPtr);
-    if (library == NULL) { 
+    if (library == nullptr) { 
         std::cout << errPtr->localizedDescription()->utf8String() << std::endl;
         return;
     }
@@ -74,33 +78,33 @@ void Instance::createLibraryFromString(const char *fileString) {
 void Instance::setFunction(const char *funcname) {
     auto funcstring = NS::String::string(funcname, NS::ASCIIStringEncoding);
 
-    if (function != NULL) {
+    if (function != nullptr) {
         function->release();
         functionPSO->release();
     }
 
     function = library->newFunction(funcstring);
-    if (function == NULL) { 
+    if (function == nullptr) { 
         printf("[MetalGPU] Couldn't create function");
         return;
     }
 
     functionPSO = device->newComputePipelineState(function, &errPtr);
-    if (function == NULL) { 
+    if (function == nullptr) { 
         std::cout << errPtr->localizedDescription()->utf8String() << std::endl;
         return;
     }
 }
 
 int Instance::maxThreadsPerGroup() {
-    if (function == NULL) {
+    if (function == nullptr) {
         return -1;
     }
     return functionPSO->maxTotalThreadsPerThreadgroup();
 }
 
 int Instance::threadExecutionWidth() {
-    if (function == NULL) {
+    if (function == nullptr) {
         return -1;
     }
     return functionPSO->threadExecutionWidth();
@@ -135,22 +139,47 @@ void Instance::runFunction(int *MetalSize, int *requestedBuffers, int numRequest
 
     MTL::Size gridSize = MTL::Size(MetalSize[0], MetalSize[1], MetalSize[2]);
 
-    NS::UInteger threadsGroupSize = NS::UInteger(MetalSize[0]);
-    NS::UInteger threadExecutionWidth = NS::UInteger(MetalSize[1]);
+    // Corrected calculation for threadsPerGroup
+    NS::UInteger psoTEW = functionPSO->threadExecutionWidth();
+    NS::UInteger psoMTTPTG = functionPSO->maxTotalThreadsPerThreadgroup();
 
-    if(threadsGroupSize > functionPSO->maxTotalThreadsPerThreadgroup()) {
-        threadsGroupSize = functionPSO->maxTotalThreadsPerThreadgroup();
+    // Ensure PSO values are somewhat sane (should be >0 from a valid PSO)
+    if (psoTEW == 0) psoTEW = 1; 
+    if (psoMTTPTG == 0) psoMTTPTG = 1;
+
+    NS::UInteger tgpWidth, tgpHeight, tgpDepth;
+
+    if (gridSize.height == 1 && gridSize.depth == 1) { // 1D dispatch
+        tgpWidth = psoMTTPTG;
+        tgpHeight = 1;
+        tgpDepth = 1;
+    } else if (gridSize.depth == 1) { // 2D dispatch
+        tgpWidth = psoTEW;
+        if (tgpWidth == 0) tgpWidth = 1; // Safety check
+        
+        tgpHeight = psoMTTPTG / tgpWidth;
+        if (tgpHeight == 0) tgpHeight = 1; // Ensure height is at least 1
+        tgpDepth = 1;
+    } else { // 3D dispatch
+        tgpWidth = psoTEW;
+        if (tgpWidth == 0) tgpWidth = 1; // Safety check
+
+        NS::UInteger threadsForHxD = psoMTTPTG / tgpWidth;
+        if (threadsForHxD == 0) threadsForHxD = 1;
+        
+        tgpHeight = static_cast<NS::UInteger>(std::floor(std::sqrt(static_cast<double>(threadsForHxD))));
+        if (tgpHeight == 0) tgpHeight = 1;
+        
+        tgpDepth = threadsForHxD / tgpHeight;
+        if (tgpDepth == 0) tgpDepth = 1;
     }
 
-    if(threadExecutionWidth > functionPSO->threadExecutionWidth()) {
-        threadExecutionWidth = functionPSO->threadExecutionWidth();
-    }
-
-    if(threadsGroupSize % threadExecutionWidth != 0) {
-        threadsGroupSize = threadsGroupSize - (threadsGroupSize % threadExecutionWidth);
-    }
-
-    MTL::Size threadsPerGroup = MTL::Size(threadsGroupSize, threadExecutionWidth, MetalSize[2]);
+    // Ensure all dimensions are at least 1, as MTL::Size requires.
+    if (tgpWidth == 0) tgpWidth = 1;
+    if (tgpHeight == 0) tgpHeight = 1;
+    if (tgpDepth == 0) tgpDepth = 1;
+    
+    MTL::Size threadsPerGroup = MTL::Size(tgpWidth, tgpHeight, tgpDepth);
 
     encoder->dispatchThreads(gridSize, threadsPerGroup);
 
@@ -167,7 +196,7 @@ void Instance::runFunction(int *MetalSize, int *requestedBuffers, int numRequest
 
 void Instance::releaseBuffer(int bufnum) {
     buffers[bufnum].buffer->release();
-    buffers[bufnum].buffer = NULL;
+    buffers[bufnum].buffer = nullptr;
 }
 
 void *Instance::getBufferPointer(int bufnum) {
