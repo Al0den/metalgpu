@@ -23,13 +23,15 @@ class Interface:
         self.__metal = ctypes.cdll.LoadLibrary(_objPath + "/lib/libmetalgpucpp-arm.dylib")
 
         self.__init_functions()
-        self.__init()
+        # Store the instance pointer returned by init
+        self.__instance = self.__init()
 
         self.load_shader_from_string(initial_shader())
         self.set_function("emptyFunc")
 
     def __del__(self) -> None:
-        self.__deleteInstance()
+        if hasattr(self, '_Interface__instance') and self.__instance:
+            self.__deleteInstance(self.__instance)
 
     def __init_functions(self) -> None:
         self.__init = self.__metal.init
@@ -44,19 +46,21 @@ class Interface:
         self.__maxThreadsPerGroup = self.__metal.maxThreadsPerGroup
         self.__threadExecutionWidth = self.__metal.threadExecutionWidth
 
+        # Update function signatures to include instance pointer
         self.__init.argtypes = []
-        self.__createBuffer.argtypes = [ctypes.c_int]
-        self.__createLibrary.argtypes = [ctypes.c_char_p]
-        self.__setFunction.argtypes = [ctypes.c_char_p]
-        self.__runFunction.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int), ctypes.c_int, ctypes.c_bool]
-        self.__releaseBuffer.argtypes = [ctypes.c_int]
-        self.__getBufferPointer.argtypes = [ctypes.c_int]
-        self.__deleteInstance.argtypes = []
-        self.__createLibraryFromString.argtypes = [ctypes.c_char_p]
-        self.__maxThreadsPerGroup.argtypes = []
-        self.__threadExecutionWidth.argtypes = []
+        self.__createBuffer.argtypes = [ctypes.c_void_p, ctypes.c_int]
+        self.__createLibrary.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+        self.__setFunction.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+        self.__runFunction.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_int), ctypes.c_int, ctypes.c_bool]
+        self.__releaseBuffer.argtypes = [ctypes.c_void_p, ctypes.c_int]
+        self.__getBufferPointer.argtypes = [ctypes.c_void_p, ctypes.c_int]
+        self.__deleteInstance.argtypes = [ctypes.c_void_p]
+        self.__createLibraryFromString.argtypes = [ctypes.c_void_p, ctypes.c_char_p]
+        self.__maxThreadsPerGroup.argtypes = [ctypes.c_void_p]
+        self.__threadExecutionWidth.argtypes = [ctypes.c_void_p]
 
-        self.__init.restype = None
+        # Return types
+        self.__init.restype = ctypes.c_void_p  # Returns instance pointer
         self.__createBuffer.restype = ctypes.c_int
         self.__createLibrary.restype = None
         self.__setFunction.restype = None
@@ -71,19 +75,19 @@ class Interface:
     def create_buffer(self, bufsize: int, buffer_type: str | allowedNumpyTypes | allowedCTypes) -> "Buffer":
         assert bufsize > 0, "[MetalGPU] Buffer size must be greater than 0"
         bufType = anyToCtypes(buffer_type)
-        number = self.__createBuffer(ctypes.sizeof(bufType) * bufsize)
+        number = self.__createBuffer(self.__instance, ctypes.sizeof(bufType) * bufsize)
         self.__getBufferPointer.restype = ctypes.POINTER(bufType)
-        buffPointer = self.__getBufferPointer(number)
+        buffPointer = self.__getBufferPointer(self.__instance, number)
         buff = Buffer(buffPointer, bufsize, self, number)
         return buff
 
     def load_shader(self, shader_path: str) -> None:
-        self.__createLibrary(shader_path.encode('utf-8'))
+        self.__createLibrary(self.__instance, shader_path.encode('utf-8'))
         self.loaded_shader = shader_path
         self.shader_from_path = True
 
     def set_function(self, function_name: str) -> None:
-        self.__setFunction(function_name.encode('utf-8'))
+        self.__setFunction(self.__instance, function_name.encode('utf-8'))
         self.current_function = function_name
 
     def run_function(self, received_size: int | MetalSize, buffers: list[Buffer], function_name: str | None = None, wait_for_completion : bool = True) -> None:
@@ -108,10 +112,10 @@ class Interface:
         metalSizePointer = metalSize.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
         bufferPointer = bufferArr.ctypes.data_as(ctypes.POINTER(ctypes.c_int))
 
-        self.__runFunction(metalSizePointer, bufferPointer, len(bufferArr), wait_for_completion)
+        self.__runFunction(self.__instance, metalSizePointer, bufferPointer, len(bufferArr), wait_for_completion)
 
     def release_buffer(self, bufnum: int) -> None:
-        self.__releaseBuffer(bufnum)
+        self.__releaseBuffer(self.__instance, bufnum)
 
     def array_to_buffer(self, array: np.ndarray | list) -> "Buffer":
         array = np.array(array)
@@ -126,13 +130,13 @@ class Interface:
         return buffer
 
     def load_shader_from_string(self, shader_string: str) -> None:
-        self.__createLibraryFromString(shader_string.encode('utf-8'))
+        self.__createLibraryFromString(self.__instance, shader_string.encode('utf-8'))
         self.loaded_shader = shader_string
         self.shader_from_path = False
 
     def threadExecutionWidth(self):
-        return self.__threadExecutionWidth()
+        return self.__threadExecutionWidth(self.__instance)
 
     def maxThreadsPerGroup(self):
-        return self.__maxThreadsPerGroup()
+        return self.__maxThreadsPerGroup(self.__instance)
 

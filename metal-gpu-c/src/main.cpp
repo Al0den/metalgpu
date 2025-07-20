@@ -4,83 +4,66 @@
 
 #include "config.h"
 #include "instance/instance.h"
-#include <mutex>
-
-Instance *mainInstance = nullptr;
-int instanceRefCount = 0;
-std::mutex instanceMutex;  // Thread safety for singleton management
-
-// Helper function to ensure instance exists
-static bool ensureInstance() {
-    return mainInstance != nullptr;
-}
 
 int main() {}  
 
 extern "C" {
-    void init() {
-        std::lock_guard<std::mutex> lock(instanceMutex);
-        if (mainInstance == nullptr) {
-            mainInstance = new Instance();
-            mainInstance->init();
-        }
-        instanceRefCount++;
+    // Returns pointer to new Instance object
+    Instance* init() {
+        Instance* instance = new Instance();
+        instance->init();
+        return instance;
     }
 
-    void createLibrary(const char *filename) {
-        if (!ensureInstance()) return;
-        mainInstance->createLibrary(filename);
+    void createLibrary(Instance* instance, const char *filename) {
+        if (instance == nullptr) return;
+        instance->createLibrary(filename);
     }
 
-    int createBuffer(int bufsize) {
-        if (!ensureInstance()) return -1;
-        int bufferNumber = mainInstance->createBuffer(bufsize);
-        return bufferNumber;
+    int createBuffer(Instance* instance, int bufsize) {
+        if (instance == nullptr) return -1;
+        return instance->createBuffer(bufsize);
     }
 
-    void setFunction(const char *funcname) {
-        if (!ensureInstance()) return;
-        mainInstance->setFunction(funcname);
+    void setFunction(Instance* instance, const char *funcname) {
+        if (instance == nullptr) return;
+        instance->setFunction(funcname);
     }
 
-    void runFunction(int *MetalSize, int *requestedBuffers, int numRequestedBuffers, bool waitForCompletion) {
-        if (!ensureInstance()) return;
-        mainInstance->runFunction(MetalSize, requestedBuffers, numRequestedBuffers, waitForCompletion);
+    void runFunction(Instance* instance, int *MetalSize, int *requestedBuffers, int numRequestedBuffers, bool waitForCompletion) {
+        if (instance == nullptr) return;
+        instance->runFunction(MetalSize, requestedBuffers, numRequestedBuffers, waitForCompletion);
     }
 
-    void releaseBuffer(int bufnum) {
-        if (!ensureInstance()) return;
-        mainInstance->releaseBuffer(bufnum);
+    void releaseBuffer(Instance* instance, int bufnum) {
+        if (instance == nullptr) return;
+        instance->releaseBuffer(bufnum);
     }
 
-    void deleteInstance() {
-        std::lock_guard<std::mutex> lock(instanceMutex);
-        instanceRefCount--;
-        if (instanceRefCount <= 0 && mainInstance != nullptr) {
-            delete mainInstance;
-            mainInstance = nullptr;
-            instanceRefCount = 0;  // Safety reset
+    void deleteInstance(Instance* instance) {
+        if (instance != nullptr) {
+            delete instance;
         }
     }
 
-    void *getBufferPointer(int bufnum) {
-        if (!ensureInstance()) return nullptr;
-        return mainInstance->getBufferPointer(bufnum);
+    void *getBufferPointer(Instance* instance, int bufnum) {
+        if (instance == nullptr) return nullptr;
+        return instance->getBufferPointer(bufnum);
     }
 
-    void createLibraryFromString(const char* string) {
-        if (!ensureInstance()) return;
-        mainInstance->createLibraryFromString(string);
+    void createLibraryFromString(Instance* instance, const char* string) {
+        if (instance == nullptr) return;
+        instance->createLibraryFromString(string);
     }
 
-    int maxThreadsPerGroup() {
-        if (!ensureInstance()) return 0;
-        return mainInstance->maxThreadsPerGroup();
+    int maxThreadsPerGroup(Instance* instance) {
+        if (instance == nullptr) return 0;
+        return instance->maxThreadsPerGroup();
     }
 
-    int threadExecutionWidth() {
-        if (!ensureInstance()) return 0;
-        return mainInstance->threadExecutionWidth();
+    int threadExecutionWidth(Instance* instance) {
+        if (instance == nullptr) return 0;
+        return instance->threadExecutionWidth();
     }
 }
 
