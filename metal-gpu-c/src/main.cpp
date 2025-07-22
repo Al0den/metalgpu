@@ -8,7 +8,7 @@
 int main() {}  
 
 extern "C" {
-    // Returns pointer to new Instance object
+
     Instance* init() {
         Instance* instance = new Instance();
         instance->init();
